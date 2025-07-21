@@ -1,0 +1,828 @@
+TMC2209 S-Curve Motion Test
+===========================
+
+Initializing GPIO...
+TMC2209 GPIO initialized successfully
+GPIO initialized successfully
+Initializing TMC2209...
+TMC2209 initialized successfully
+Setting motor current to 500mA...
+Motor current: 582 mA
+
+Initializing S-curve motion control...
+Position monitor initialized successfully
+S-curve motion control initialized with MSCNT position tracking
+=== S-Curve Motion Parameters ===
+
+Enter target angle (degrees, output shaft): 45
+Enter maximum speed (RPM, input shaft): 30
+Enter maximum acceleration (Hz/sec, input shaft): 0.5
+Enter jerk rate (Hz/sec², input shaft): 0.002
+Enter starting speed (Hz, input shaft): 100
+Enter starting acceleration (Hz/sec, input shaft): 0
+Enter gear ratio (e.g., 100 for 100:1 reduction): 99.548
+Enter direction (c = clockwise, w = counter-clockwise):
+=== Motion Parameters Summary ===
+- Target angle: 45.00 degrees (output shaft)
+- Maximum speed: 30.00 RPM (input shaft)
+- Maximum acceleration: 0.50 Hz/sec (input shaft)
+- Jerk rate: 0.002 Hz/sec² (input shaft)
+- Starting speed: 100.00 Hz (input shaft)
+- Starting acceleration: 0.00 Hz/sec (input shaft)
+- Gear ratio: 99:1
+- Direction: Counter-clockwise
+- Microstep resolution: 1/8
+
+=== Calculated Parameters ===
+- Steps per revolution: 1600
+- Total steps: 19800
+- Output shaft speed: 0.30 RPM
+- Maximum step frequency: 800.00 Hz
+- Minimum timer period: 1250 μs
+
+Starting S-curve motion...
+Position monitoring stopped
+S-curve motion stopped
+S-curve profile calculation:
+  Total steps: 19800
+  Max speed: 800.00 Hz
+  Max acceleration: 0.50 Hz/step
+  Jerk rate: 0.002 Hz/step²
+  Jerk phase steps (increase): 249
+  Speed after jerk: 162.00 Hz
+  Constant accel steps: 1275
+  Jerk phase steps (decrease): 249
+  Total accel steps: 1773
+  Acceleration phase: 1773 steps
+  Constant speed phase: 16254 steps
+  Deceleration phase: 1773 steps
+
+  Sub-phase breakdown:
+    Accel jerk increase: 249 steps
+    Accel constant: 1275 steps
+    Accel jerk decrease: 249 steps
+    Decel jerk increase: 249 steps
+    Decel constant: 1275 steps
+    Decel jerk decrease: 249 steps
+Position monitoring stopped
+Position monitoring started successfully
+Position monitoring thread started
+S-curve motion started: 45.00 degrees, 30.00 RPM max, counter-clockwise direction
+
+Monitoring motion progress...
+Press Ctrl+C to stop motion
+
+Starting S-curve motion: 19800 steps
+Initial speed: 100.00 Hz, timer period: 10000 μs
+Step 1000/19800 (5.1%): 537.50 Hz, 1860 μs, Phase: Accel Constant
+  Position: Step=1000, MSCNT=654, Error=-306, Age=79 ms ✗
+Progress: 5.1% (1000/19800 steps) - Accel Constant
+  Current speed: 538.00 Hz, Timer: 1858 μs, Phase: Accel Constant
+Step 2000/19800 (10.1%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=2000, MSCNT=643, Error=-349, Age=100 ms ✗
+Progress: 10.2% (2011/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 3000/19800 (15.2%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=3000, MSCNT=186, Error=-358, Age=88 ms ✗
+Progress: 15.4% (3052/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 4000/19800 (20.2%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=4000, MSCNT=746, Error=-342, Age=76 ms ✗
+Progress: 20.7% (4093/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 5000/19800 (25.3%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=5000, MSCNT=282, Error=-326, Age=65 ms ✗
+Progress: 25.9% (5134/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 6000/19800 (30.3%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=6000, MSCNT=840, Error=-344, Age=53 ms ✗
+Progress: 31.2% (6175/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 7000/19800 (35.4%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=7000, MSCNT=377, Error=-327, Age=41 ms ✗
+Progress: 36.4% (7216/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 8000/19800 (40.4%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=8000, MSCNT=935, Error=-345, Age=29 ms ✗
+Progress: 41.7% (8257/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 9000/19800 (45.5%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=9000, MSCNT=472, Error=-328, Age=17 ms ✗
+Progress: 47.0% (9298/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 10000/19800 (50.5%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=10000, MSCNT=9, Error=-343, Age=5 ms ✗
+Progress: 52.2% (10338/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 11000/19800 (55.6%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=11000, MSCNT=950, Error=-330, Age=98 ms ✗
+Progress: 57.5% (11379/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 12000/19800 (60.6%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=12000, MSCNT=485, Error=-347, Age=86 ms ✗
+Progress: 62.7% (12420/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 13000/19800 (65.7%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=13000, MSCNT=23, Error=-329, Age=75 ms ✗
+Progress: 68.0% (13461/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 14000/19800 (70.7%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=14000, MSCNT=582, Error=-346, Age=63 ms ✗
+Progress: 73.2% (14502/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 15000/19800 (75.8%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=15000, MSCNT=118, Error=-330, Age=51 ms ✗
+Progress: 78.5% (15543/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 16000/19800 (80.8%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=16000, MSCNT=677, Error=-347, Age=39 ms ✗
+Progress: 83.8% (16584/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 17000/19800 (85.9%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=17000, MSCNT=213, Error=-331, Age=27 ms ✗
+Progress: 89.0% (17624/19800 steps) - Constant Speed
+  Current speed: 800.00 Hz, Timer: 1250 μs, Phase: Constant Speed
+Step 18000/19800 (90.9%): 800.00 Hz, 1250 μs, Phase: Constant Speed
+  Position: Step=18000, MSCNT=772, Error=-348, Age=15 ms ✗
+Progress: 94.2% (18647/19800 steps) - Decel Constant
+  Current speed: 552.50 Hz, Timer: 1809 μs, Phase: Decel Constant
+Step 19000/19800 (96.0%): 376.00 Hz, 2659 μs, Phase: Decel Constant
+  Position: Step=19000, MSCNT=54, Error=-266, Age=34 ms ✗
+Progress: 99.2% (19651/19800 steps) - Decel Jerk Decrease
+  Current speed: 60.50 Hz, Timer: 16529 μs, Phase: Decel Jerk Decrease
+S-curve motion complete: 19800 steps executed
+
+SUCCESS: S-curve motion completed!
+
+=== Final Status ===
+- Status: Complete
+- Progress: 100.0%
+- Steps completed: 19800
+- Total steps: 19800
+
+=== Timing Information ===
+- Total motion time: 34.929 seconds
+- Average step frequency: 566.87 Hz
+- Average speed: 0.21 RPM
+Position monitoring thread stopped
+Position monitoring stopped
+S-curve motion stopped
+Position monitoring stopped
+Position monitor deinitialized
+S-curve motion control deinitialized
+TMC2209 GPIO deinitialized
+
+S-curve motion test completed successfully!
+#
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+TMC2209 S-Curve Motion Test
+===========================
+
+Initializing GPIO...
+TMC2209 GPIO initialized successfully
+GPIO initialized successfully
+Initializing TMC2209...
+TMC2209 initialized successfully
+Setting motor current to 500mA...
+Motor current: 582 mA
+
+Initializing S-curve motion control...
+Position monitor initialized successfully
+S-curve motion control initialized with MSCNT position tracking
+=== S-Curve Motion Parameters ===
+
+Enter target angle (degrees, output shaft): 45
+Enter maximum speed (RPM, input shaft): 30
+Enter maximum acceleration (Hz/sec, input shaft): 0.5
+Enter jerk rate (Hz/sec², input shaft): 0.002
+Enter starting speed (Hz, input shaft): 100
+Enter starting acceleration (Hz/sec, input shaft): 0
+Enter gear ratio (e.g., 100 for 100:1 reduction): 99.548
+Enter direction (c = clockwise, w = counter-clockwise):
+=== Motion Parameters Summary ===
+- Target angle: 45.00 degrees (output shaft)
+- Maximum speed: 30.00 RPM (input shaft)
+- Maximum acceleration: 0.50 Hz/sec (input shaft)
+- Jerk rate: 0.002 Hz/sec² (input shaft)
+- Starting speed: 100.00 Hz (input shaft)
+- Starting acceleration: 0.00 Hz/sec (input shaft)
+- Gear ratio: 99:1
+- Direction: Counter-clockwise
+- Microstep resolution: 1/16
+
+=== Calculated Parameters ===
+- Steps per revolution: 3200
+- Total steps: 39600
+- Output shaft speed: 0.30 RPM
+- Maximum step frequency: 1600.00 Hz
+- Minimum timer period: 625 μs
+
+Starting S-curve motion...
+Position monitoring stopped
+S-curve motion stopped
+S-curve profile calculation:
+  Total steps: 39600
+  Max speed: 1600.00 Hz
+  Max acceleration: 0.50 Hz/step
+  Jerk rate: 0.002 Hz/step²
+  Jerk phase steps (increase): 249
+  Speed after jerk: 162.00 Hz
+  Constant accel steps: 2875
+  Jerk phase steps (decrease): 249
+  Total accel steps: 3373
+  Acceleration phase: 3373 steps
+  Constant speed phase: 32854 steps
+  Deceleration phase: 3373 steps
+
+  Sub-phase breakdown:
+    Accel jerk increase: 249 steps
+    Accel constant: 2875 steps
+    Accel jerk decrease: 249 steps
+    Decel jerk increase: 249 steps
+    Decel constant: 2875 steps
+    Decel jerk decrease: 249 steps
+Position monitoring stopped
+Position monitoring started successfully
+Position monitoring thread started
+S-curve motion started: 45.00 degrees, 30.00 RPM max, counter-clockwise direction
+
+Monitoring motion progress...
+Press Ctrl+C to stop motion
+
+Starting S-curve motion: 39600 steps
+Initial speed: 100.00 Hz, timer period: 10000 μs
+Step 1000/39600 (2.5%): 537.50 Hz, 1860 μs, Phase: Accel Constant
+  Position: Step=1000, MSCNT=471, Error=503, Age=79 ms ✗
+Progress: 2.5% (1000/39600 steps) - Accel Constant
+  Current speed: 537.50 Hz, Timer: 1860 μs, Phase: Accel Constant
+Step 2000/39600 (5.1%): 1037.50 Hz, 963 μs, Phase: Accel Constant
+  Position: Step=2000, MSCNT=271, Error=463, Age=26 ms ✗
+Progress: 5.3% (2092/39600 steps) - Accel Constant
+  Current speed: 1084.00 Hz, Timer: 922 μs, Phase: Accel Constant
+Step 3000/39600 (7.6%): 1537.50 Hz, 650 μs, Phase: Accel Constant
+  Position: Step=3000, MSCNT=483, Error=435, Age=77 ms ✗
+Progress: 8.0% (3160/39600 steps) - Accel Jerk Decrease
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Accel Jerk Decrease
+Step 4000/39600 (10.1%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=4000, MSCNT=90, Error=426, Age=72 ms ✗
+Progress: 10.8% (4281/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 5000/39600 (12.6%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=5000, MSCNT=881, Error=417, Age=66 ms ✗
+Progress: 13.6% (5403/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 6000/39600 (15.2%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=6000, MSCNT=649, Error=425, Age=60 ms ✗
+WARNING: Failed to read MSCNT register in monitor thread
+Progress: 16.5% (6524/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 7000/39600 (17.7%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=7000, MSCNT=416, Error=416, Age=55 ms ✗
+Progress: 19.3% (7645/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 8000/39600 (20.2%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=8000, MSCNT=184, Error=424, Age=49 ms ✗
+Progress: 22.1% (8766/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 9000/39600 (22.7%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=9000, MSCNT=976, Error=432, Age=43 ms ✗
+Progress: 25.0% (9887/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 10000/39600 (25.3%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=10000, MSCNT=742, Error=422, Age=37 ms ✗
+Step 11000/39600 (27.8%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=11000, MSCNT=511, Error=431, Age=31 ms ✗
+Progress: 27.8% (11008/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 12000/39600 (30.3%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=12000, MSCNT=277, Error=421, Age=25 ms ✗
+Progress: 30.6% (12129/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 13000/39600 (32.8%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=13000, MSCNT=46, Error=430, Age=19 ms ✗
+Progress: 33.5% (13250/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 14000/39600 (35.4%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=14000, MSCNT=839, Error=423, Age=13 ms ✗
+Progress: 36.3% (14371/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 15000/39600 (37.9%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=15000, MSCNT=606, Error=430, Age=7 ms ✗
+Progress: 39.1% (15492/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 16000/39600 (40.4%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=16000, MSCNT=376, Error=424, Age=1 ms ✗
+Progress: 42.0% (16613/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 17000/39600 (42.9%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=17000, MSCNT=523, Error=427, Age=100 ms ✗
+Progress: 44.8% (17734/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 18000/39600 (45.5%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=18000, MSCNT=293, Error=421, Age=94 ms ✗
+Progress: 47.6% (18855/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 19000/39600 (48.0%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=19000, MSCNT=60, Error=428, Age=88 ms ✗
+Progress: 50.4% (19976/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 20000/39600 (50.5%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=20000, MSCNT=852, Error=420, Age=83 ms ✗
+Step 21000/39600 (53.0%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=21000, MSCNT=621, Error=429, Age=77 ms ✗
+Progress: 53.3% (21096/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 22000/39600 (55.6%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=22000, MSCNT=390, Error=422, Age=71 ms ✗
+Progress: 56.1% (22217/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 23000/39600 (58.1%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=23000, MSCNT=158, Error=430, Age=65 ms ✗
+Progress: 58.9% (23338/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 24000/39600 (60.6%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=24000, MSCNT=948, Error=420, Age=59 ms ✗
+Progress: 61.8% (24459/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 25000/39600 (63.1%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=25000, MSCNT=716, Error=428, Age=53 ms ✗
+Progress: 64.6% (25580/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 26000/39600 (65.7%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=26000, MSCNT=484, Error=420, Age=47 ms ✗
+Progress: 67.4% (26701/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 27000/39600 (68.2%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=27000, MSCNT=251, Error=427, Age=41 ms ✗
+Progress: 70.3% (27821/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 28000/39600 (70.7%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=28000, MSCNT=18, Error=418, Age=35 ms ✗
+Progress: 73.1% (28942/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 29000/39600 (73.2%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=29000, MSCNT=810, Error=426, Age=29 ms ✗
+Step 30000/39600 (75.8%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=30000, MSCNT=577, Error=417, Age=23 ms ✗
+Progress: 75.9% (30063/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 31000/39600 (78.3%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=31000, MSCNT=345, Error=425, Age=17 ms ✗
+Progress: 78.7% (31184/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 32000/39600 (80.8%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=32000, MSCNT=112, Error=432, Age=11 ms ✗
+Progress: 81.6% (32305/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 33000/39600 (83.3%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=33000, MSCNT=902, Error=422, Age=6 ms ✗
+Progress: 84.4% (33425/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 34000/39600 (85.9%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=34000, MSCNT=671, Error=431, Age=0 ms ✗
+Progress: 87.2% (34546/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 35000/39600 (88.4%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=35000, MSCNT=820, Error=420, Age=99 ms ✗
+Progress: 90.1% (35667/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+Step 36000/39600 (90.9%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=36000, MSCNT=588, Error=428, Age=93 ms ✗
+Progress: 92.8% (36759/39600 steps) - Decel Constant
+  Current speed: 1396.50 Hz, Timer: 716 μs, Phase: Decel Constant
+WARNING: Failed to read MSCNT register in monitor thread
+Step 37000/39600 (93.4%): 1276.00 Hz, 783 μs, Phase: Decel Constant
+  Position: Step=37000, MSCNT=978, Error=450, Age=29 ms ✗
+Progress: 95.4% (37772/39600 steps) - Decel Constant
+  Current speed: 890.00 Hz, Timer: 1123 μs, Phase: Decel Constant
+Step 38000/39600 (96.0%): 776.00 Hz, 1288 μs, Phase: Decel Constant
+  Position: Step=38000, MSCNT=264, Error=488, Age=77 ms ✗
+Progress: 98.0% (38792/39600 steps) - Decel Constant
+  Current speed: 380.00 Hz, Timer: 2631 μs, Phase: Decel Constant
+Step 39000/39600 (98.5%): 276.00 Hz, 3623 μs, Phase: Decel Constant
+  Position: Step=39000, MSCNT=721, Error=-495, Age=40 ms ✗
+Progress: 99.8% (39506/39600 steps) - Decel Jerk Decrease
+  Current speed: 47.02 Hz, Timer: 21265 μs, Phase: Decel Jerk Decrease
+WARNING: Failed to read MSCNT register in monitor thread
+S-curve motion complete: 39600 steps executed
+
+SUCCESS: S-curve motion completed!
+
+=== Final Status ===
+- Status: Complete
+- Progress: 100.0%
+- Steps completed: 39600
+- Total steps: 39600
+
+=== Timing Information ===
+- Total motion time: 37.630 seconds
+- Average step frequency: 1052.36 Hz
+- Average speed: 0.20 RPM
+Position monitoring thread stopped
+Position monitoring stopped
+S-curve motion stopped
+Position monitoring stopped
+Position monitor deinitialized
+S-curve motion control deinitialized
+TMC2209 GPIO deinitialized
+
+S-curve motion test completed successfully!
+
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+
+TMC2209 S-Curve Motion Test
+===========================
+
+Initializing GPIO...
+TMC2209 GPIO initialized successfully
+GPIO initialized successfully
+Initializing TMC2209...
+TMC2209 initialized successfully
+Setting motor current to 500mA...
+Motor current: 582 mA
+
+Initializing S-curve motion control...
+Position monitor initialized successfully
+S-curve motion control initialized with MSCNT position tracking
+=== S-Curve Motion Parameters ===
+
+Enter target angle (degrees, output shaft): 45
+Enter maximum speed (RPM, input shaft): 30
+Enter maximum acceleration (Hz/sec, input shaft): 0.5
+Enter jerk rate (Hz/sec², input shaft): 0.002
+Enter starting speed (Hz, input shaft): 100
+Enter starting acceleration (Hz/sec, input shaft): 0
+Enter gear ratio (e.g., 100 for 100:1 reduction): 99.548
+Enter direction (c = clockwise, w = counter-clockwise):
+=== Motion Parameters Summary ===
+- Target angle: 45.00 degrees (output shaft)
+- Maximum speed: 30.00 RPM (input shaft)
+- Maximum acceleration: 0.50 Hz/sec (input shaft)
+- Jerk rate: 0.002 Hz/sec² (input shaft)
+- Starting speed: 100.00 Hz (input shaft)
+- Starting acceleration: 0.00 Hz/sec (input shaft)
+- Gear ratio: 99:1
+- Direction: Counter-clockwise
+- Microstep resolution: 1/32
+
+=== Calculated Parameters ===
+- Steps per revolution: 6400
+- Total steps: 79200
+- Output shaft speed: 0.30 RPM
+- Maximum step frequency: 3200.00 Hz
+- Minimum timer period: 312 μs
+
+Starting S-curve motion...
+Position monitoring stopped
+S-curve motion stopped
+S-curve profile calculation:
+  Total steps: 79200
+  Max speed: 3200.00 Hz
+  Max acceleration: 0.50 Hz/step
+  Jerk rate: 0.002 Hz/step²
+  Jerk phase steps (increase): 249
+  Speed after jerk: 162.00 Hz
+  Constant accel steps: 6075
+  Jerk phase steps (decrease): 249
+  Total accel steps: 6573
+  Acceleration phase: 6573 steps
+  Constant speed phase: 66054 steps
+  Deceleration phase: 6573 steps
+
+  Sub-phase breakdown:
+    Accel jerk increase: 249 steps
+    Accel constant: 6075 steps
+    Accel jerk decrease: 249 steps
+    Decel jerk increase: 249 steps
+    Decel constant: 6075 steps
+    Decel jerk decrease: 249 steps
+Position monitoring stopped
+Position monitoring started successfully
+Position monitoring thread started
+S-curve motion started: 45.00 degrees, 30.00 RPM max, counter-clockwise direction
+
+Monitoring motion progress...
+Press Ctrl+C to stop motion
+
+Starting S-curve motion: 79200 steps
+Initial speed: 100.00 Hz, timer period: 10000 μs
+Step 1000/79200 (1.3%): 537.50 Hz, 1860 μs, Phase: Accel Constant
+  Position: Step=1000, MSCNT=762, Error=266, Age=79 ms ✗
+Progress: 1.3% (1000/79200 steps) - Accel Constant
+  Current speed: 537.50 Hz, Timer: 1860 μs, Phase: Accel Constant
+Step 2000/79200 (2.5%): 1037.50 Hz, 963 μs, Phase: Accel Constant
+  Position: Step=2000, MSCNT=661, Error=253, Age=27 ms ✗
+Progress: 2.6% (2092/79200 steps) - Accel Constant
+  Current speed: 1083.50 Hz, Timer: 922 μs, Phase: Accel Constant
+Step 3000/79200 (3.8%): 1537.50 Hz, 650 μs, Phase: Accel Constant
+  Position: Step=3000, MSCNT=766, Error=230, Age=77 ms ✗
+Progress: 4.0% (3160/79200 steps) - Accel Constant
+  Current speed: 1617.50 Hz, Timer: 618 μs, Phase: Accel Constant
+Step 4000/79200 (5.1%): 2037.50 Hz, 490 μs, Phase: Accel Constant
+  Position: Step=4000, MSCNT=315, Error=211, Age=9 ms ✗
+WARNING: Failed to read MSCNT register in monitor thread
+Progress: 5.4% (4294/79200 steps) - Accel Constant
+  Current speed: 2184.50 Hz, Timer: 457 μs, Phase: Accel Constant
+Step 5000/79200 (6.3%): 2537.50 Hz, 394 μs, Phase: Accel Constant
+  Position: Step=5000, MSCNT=734, Error=198, Age=26 ms ✗
+Progress: 7.0% (5538/79200 steps) - Accel Constant
+  Current speed: 2806.50 Hz, Timer: 356 μs, Phase: Accel Constant
+Step 6000/79200 (7.6%): 3037.50 Hz, 329 μs, Phase: Accel Constant
+  Position: Step=6000, MSCNT=405, Error=181, Age=70 ms ✗
+Progress: 8.5% (6768/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 7000/79200 (8.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=7000, MSCNT=100, Error=164, Age=69 ms ✗
+Step 8000/79200 (10.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=8000, MSCNT=0, Error=168, Age=66 ms ✗
+Progress: 10.2% (8051/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 9000/79200 (11.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=9000, MSCNT=921, Error=169, Age=62 ms ✗
+Progress: 11.8% (9335/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 10000/79200 (12.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=10000, MSCNT=817, Error=169, Age=59 ms ✗
+Progress: 13.4% (10618/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 11000/79200 (13.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=11000, MSCNT=714, Error=170, Age=55 ms ✗
+Progress: 15.0% (11901/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 12000/79200 (15.2%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=12000, MSCNT=612, Error=172, Age=52 ms ✗
+Step 13000/79200 (16.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=13000, MSCNT=508, Error=164, Age=48 ms ✗
+Progress: 16.6% (13184/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+WARNING: Failed to read MSCNT register in monitor thread
+Step 14000/79200 (17.7%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=14000, MSCNT=406, Error=166, Age=45 ms ✗
+Progress: 18.3% (14467/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 15000/79200 (18.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=15000, MSCNT=303, Error=167, Age=42 ms ✗
+Progress: 19.9% (15750/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 16000/79200 (20.2%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=16000, MSCNT=198, Error=166, Age=38 ms ✗
+Step 17000/79200 (21.5%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=17000, MSCNT=95, Error=167, Age=35 ms ✗
+Progress: 21.5% (17033/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 18000/79200 (22.7%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=18000, MSCNT=1016, Error=168, Age=31 ms ✗
+Progress: 23.1% (18316/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 19000/79200 (24.0%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=19000, MSCNT=913, Error=169, Age=28 ms ✗
+Progress: 24.7% (19599/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 20000/79200 (25.3%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=20000, MSCNT=810, Error=170, Age=24 ms ✗
+Progress: 26.4% (20882/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 21000/79200 (26.5%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=21000, MSCNT=705, Error=169, Age=21 ms ✗
+Step 22000/79200 (27.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=22000, MSCNT=603, Error=171, Age=17 ms ✗
+Progress: 28.0% (22165/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 23000/79200 (29.0%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=23000, MSCNT=498, Error=170, Age=14 ms ✗
+Progress: 29.6% (23448/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 24000/79200 (30.3%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=24000, MSCNT=396, Error=172, Age=10 ms ✗
+Progress: 31.2% (24731/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 25000/79200 (31.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=25000, MSCNT=293, Error=165, Age=7 ms ✗
+Step 26000/79200 (32.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=26000, MSCNT=189, Error=165, Age=4 ms ✗
+Progress: 32.8% (26015/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 27000/79200 (34.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=27000, MSCNT=86, Error=166, Age=0 ms ✗
+Progress: 34.5% (27298/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 28000/79200 (35.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=28000, MSCNT=359, Error=167, Age=102 ms ✗
+Progress: 36.1% (28581/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 29000/79200 (36.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=29000, MSCNT=256, Error=168, Age=98 ms ✗
+Progress: 37.7% (29864/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 30000/79200 (37.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=30000, MSCNT=151, Error=167, Age=95 ms ✗
+Step 31000/79200 (39.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=31000, MSCNT=49, Error=169, Age=91 ms ✗
+Progress: 39.3% (31147/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 32000/79200 (40.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=32000, MSCNT=970, Error=170, Age=88 ms ✗
+Progress: 40.9% (32430/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 33000/79200 (41.7%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=33000, MSCNT=867, Error=171, Age=84 ms ✗
+Progress: 42.6% (33713/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 34000/79200 (42.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=34000, MSCNT=764, Error=172, Age=81 ms ✗
+Progress: 44.2% (34996/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 35000/79200 (44.2%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=35000, MSCNT=661, Error=165, Age=78 ms ✗
+Step 36000/79200 (45.5%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=36000, MSCNT=557, Error=165, Age=74 ms ✗
+Progress: 45.8% (36279/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 37000/79200 (46.7%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=37000, MSCNT=455, Error=167, Age=71 ms ✗
+Progress: 47.4% (37562/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 38000/79200 (48.0%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=38000, MSCNT=352, Error=168, Age=67 ms ✗
+Progress: 49.0% (38845/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 39000/79200 (49.2%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=39000, MSCNT=250, Error=170, Age=64 ms ✗
+Step 40000/79200 (50.5%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=40000, MSCNT=145, Error=169, Age=60 ms ✗
+Progress: 50.7% (40128/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 41000/79200 (51.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=41000, MSCNT=43, Error=171, Age=57 ms ✗
+Progress: 52.3% (41411/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 42000/79200 (53.0%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=42000, MSCNT=964, Error=164, Age=53 ms ✗
+Progress: 53.9% (42695/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 43000/79200 (54.3%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=43000, MSCNT=862, Error=166, Age=50 ms ✗
+Progress: 55.5% (43978/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 44000/79200 (55.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=44000, MSCNT=758, Error=166, Age=46 ms ✗
+Step 45000/79200 (56.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=45000, MSCNT=656, Error=168, Age=43 ms ✗
+Progress: 57.1% (45261/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 46000/79200 (58.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=46000, MSCNT=552, Error=168, Age=39 ms ✗
+Progress: 58.8% (46544/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 47000/79200 (59.3%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=47000, MSCNT=450, Error=170, Age=36 ms ✗
+Progress: 60.4% (47827/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 48000/79200 (60.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=48000, MSCNT=346, Error=170, Age=32 ms ✗
+Step 49000/79200 (61.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=49000, MSCNT=244, Error=164, Age=29 ms ✗
+Progress: 62.0% (49110/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 50000/79200 (63.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=50000, MSCNT=141, Error=165, Age=25 ms ✗
+Progress: 63.6% (50393/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 51000/79200 (64.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=51000, MSCNT=39, Error=167, Age=22 ms ✗
+Progress: 65.2% (51676/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 52000/79200 (65.7%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=52000, MSCNT=960, Error=168, Age=18 ms ✗
+Progress: 66.9% (52959/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 53000/79200 (66.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=53000, MSCNT=856, Error=168, Age=15 ms ✗
+Step 54000/79200 (68.2%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=54000, MSCNT=753, Error=169, Age=12 ms ✗
+Progress: 68.5% (54242/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 55000/79200 (69.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=55000, MSCNT=648, Error=168, Age=8 ms ✗
+Progress: 70.1% (55525/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 56000/79200 (70.7%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=56000, MSCNT=546, Error=170, Age=5 ms ✗
+Progress: 71.7% (56809/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 57000/79200 (72.0%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=57000, MSCNT=443, Error=171, Age=1 ms ✗
+Step 58000/79200 (73.2%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=58000, MSCNT=715, Error=171, Age=103 ms ✗
+Progress: 73.3% (58092/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 59000/79200 (74.5%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=59000, MSCNT=612, Error=172, Age=99 ms ✗
+Progress: 75.0% (59375/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 60000/79200 (75.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=60000, MSCNT=508, Error=164, Age=96 ms ✗
+Progress: 76.6% (60658/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 61000/79200 (77.0%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=61000, MSCNT=405, Error=165, Age=92 ms ✗
+Progress: 78.2% (61941/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 62000/79200 (78.3%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=62000, MSCNT=301, Error=165, Age=89 ms ✗
+Step 63000/79200 (79.5%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=63000, MSCNT=197, Error=165, Age=86 ms ✗
+Progress: 79.8% (63224/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 64000/79200 (80.8%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=64000, MSCNT=95, Error=167, Age=82 ms ✗
+Progress: 81.4% (64507/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 65000/79200 (82.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=65000, MSCNT=1016, Error=168, Age=79 ms ✗
+Progress: 83.1% (65790/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 66000/79200 (83.3%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=66000, MSCNT=911, Error=167, Age=75 ms ✗
+Step 67000/79200 (84.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=67000, MSCNT=809, Error=169, Age=72 ms ✗
+Progress: 84.7% (67073/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 68000/79200 (85.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=68000, MSCNT=706, Error=170, Age=68 ms ✗
+Progress: 86.3% (68356/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 69000/79200 (87.1%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=69000, MSCNT=601, Error=169, Age=65 ms ✗
+Progress: 87.9% (69639/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 70000/79200 (88.4%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=70000, MSCNT=499, Error=171, Age=61 ms ✗
+Progress: 89.5% (70922/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 71000/79200 (89.6%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=71000, MSCNT=395, Error=171, Age=58 ms ✗
+Step 72000/79200 (90.9%): 3200.00 Hz, 312 μs, Phase: Constant Speed
+  Position: Step=72000, MSCNT=291, Error=171, Age=55 ms ✗
+Progress: 91.2% (72205/79200 steps) - Constant Speed
+  Current speed: 3200.00 Hz, Timer: 312 μs, Phase: Constant Speed
+Step 73000/79200 (92.2%): 3076.00 Hz, 325 μs, Phase: Decel Constant
+  Position: Step=73000, MSCNT=184, Error=168, Age=53 ms ✗
+Progress: 92.7% (73447/79200 steps) - Decel Constant
+  Current speed: 2852.50 Hz, Timer: 350 μs, Phase: Decel Constant
+Step 74000/79200 (93.4%): 2576.00 Hz, 388 μs, Phase: Decel Constant
+  Position: Step=74000, MSCNT=419, Error=187, Age=91 ms ✗
+Progress: 94.0% (74483/79200 steps) - Decel Constant
+  Current speed: 2334.50 Hz, Timer: 428 μs, Phase: Decel Constant
+Step 75000/79200 (94.7%): 2076.00 Hz, 481 μs, Phase: Decel Constant
+  Position: Step=75000, MSCNT=440, Error=208, Age=102 ms ✗
+Progress: 95.4% (75518/79200 steps) - Decel Constant
+  Current speed: 1817.00 Hz, Timer: 550 μs, Phase: Decel Constant
+Step 76000/79200 (96.0%): 1576.00 Hz, 634 μs, Phase: Decel Constant
+  Position: Step=76000, MSCNT=714, Error=226, Age=21 ms ✗
+Progress: 96.7% (76592/79200 steps) - Decel Constant
+  Current speed: 1280.00 Hz, Timer: 781 μs, Phase: Decel Constant
+Step 77000/79200 (97.2%): 1076.00 Hz, 929 μs, Phase: Decel Constant
+  Position: Step=77000, MSCNT=396, Error=244, Age=48 ms ✗
+Progress: 98.0% (77600/79200 steps) - Decel Constant
+  Current speed: 776.00 Hz, Timer: 1288 μs, Phase: Decel Constant
+Step 78000/79200 (98.5%): 576.00 Hz, 1736 μs, Phase: Decel Constant
+  Position: Step=78000, MSCNT=481, Error=265, Age=35 ms ✗
+Progress: 99.3% (78610/79200 steps) - Decel Constant
+  Current speed: 271.00 Hz, Timer: 3690 μs, Phase: Decel Constant
+Step 79000/79200 (99.7%): 78.40 Hz, 12755 μs, Phase: Decel Jerk Decrease
+  Position: Step=79000, MSCNT=423, Error=287, Age=78 ms ✗
+Progress: 99.9% (79136/79200 steps) - Decel Jerk Decrease
+  Current speed: 42.22 Hz, Timer: 23683 μs, Phase: Decel Jerk Decrease
+S-curve motion complete: 79200 steps executed
+
+SUCCESS: S-curve motion completed!
+
+=== Final Status ===
+- Status: Complete
+- Progress: 100.0%
+- Steps completed: 79200
+- Total steps: 79200
+
+=== Timing Information ===
+- Total motion time: 40.431 seconds
+- Average step frequency: 1958.90 Hz
+- Average speed: 0.19 RPM
+Position monitoring thread stopped
+Position monitoring stopped
+S-curve motion stopped
+Position monitoring stopped
+Position monitor deinitialized
+S-curve motion control deinitialized
+TMC2209 GPIO deinitialized
+
+S-curve motion test completed successfully!
+#
+###################################################################################################################################################
+###################################################################################################################################################
+###################################################################################################################################################
+

@@ -1,0 +1,94 @@
+# Build artifacts
+*.o
+*.a
+*.so
+*.d
+tests/
+*.exe
+
+# Compiled binaries
+tmc2209_test
+test_s_curve_calculations
+test_s_curve_motion
+test_uart_timing
+test_uart_timing_detailed
+
+# Temporary files
+*~
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+
+# Build directories
+build/
+dist/
+obj/
+bin/
+
+# Log files
+*.log
+*.out
+
+# Backup files
+*.bak
+*.backup
+
+# System files
+.fuse_hidden*
+.directory
+.Trash-*
+
+# Cross-compilation artifacts
+*.cross
+*.buildroot
+
+# Test results
+test_results/
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Package files
+*.tar.gz
+*.zip
+*.deb
+*.rpm
+
+# Configuration files with sensitive data
+config.local.h
+secrets.h
+*.key
+*.pem
+
+# Windows thumbnail cache files
+ehthumbs.db
+ehthumbs_vista.db
+
+# Folder config file
+Desktop.ini
+
+# Subversion folders
+.svn
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
