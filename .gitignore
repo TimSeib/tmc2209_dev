@@ -34,6 +34,8 @@ build/
 dist/
 obj/
 bin/
+PyTmcStepper/
+unused/
 
 # Log files
 *.log
