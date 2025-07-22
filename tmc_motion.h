@@ -58,10 +58,8 @@ typedef struct {
     uint64_t last_update_time_us;
     uint64_t last_step_count_update_time_us;  // Timestamp when step count was last updated
     
-    // Microstep-based polling
-    uint32_t last_polled_step_count;  // Last step count when we polled MSCNT
-    uint32_t steps_since_last_poll;   // Steps completed since last poll
-    uint32_t poll_interval_steps;     // How many steps to wait before next poll
+    // Polling configuration
+    uint32_t poll_interval_steps;     // How many steps to wait before next poll (microstep_resolution)
     
     // Error accumulation tracking
     uint32_t last_expected_step_count;  // Expected step count at last poll
@@ -69,6 +67,10 @@ typedef struct {
     int32_t total_step_error;           // Cumulative step error
     uint32_t error_check_count;         // Number of error checks performed
     float average_step_error;           // Average error per check
+    
+    // Initial position offset for relative error calculation
+    uint16_t initial_mscnt;             // Initial MSCNT value at start
+    uint32_t initial_step_count;        // Initial step count at start
 } tmc_position_monitor_t;
 
 // ============================================================================

@@ -45,7 +45,7 @@ int main() {
     printf("Initializing TMC2209...\n");
     TMC2209_SetDefaults(&driver);
     driver.config.current = 500;      // 500mA
-    driver.config.microsteps = 8;     // change microsteps here
+    driver.config.microsteps = 16;     // change microsteps here
     
     if (!TMC2209_Init(&driver)) {
         printf("ERROR: Failed to initialize TMC2209\n");

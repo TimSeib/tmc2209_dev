@@ -57,8 +57,17 @@
      motion->start_time_us = get_time_us();
      motion->last_step_time_us = motion->start_time_us;
      motion->next_step_time_us = motion->start_time_us;
-     motion->current_step = 0;
-     motion->steps_completed = 0;
+     
+     // Synchronize step count with motor position
+     if (motion->position_monitor.driver) {
+         motion->current_step = motion->position_monitor.initial_step_count;
+         motion->steps_completed = motion->position_monitor.initial_step_count;
+         printf("Motion synchronized: starting from step %u (motor position)\n", motion->steps_completed);
+     } else {
+         motion->current_step = 0;
+         motion->steps_completed = 0;
+     }
+     
      motion->current_phase = PHASE_ACCEL_INCREASE;
      motion->current_speed_hz = motion->start_speed_hz;
      motion->current_accel_hz_per_sec = motion->start_accel_hz_per_sec;
@@ -83,154 +92,9 @@
              motion->steps_completed++;
              motion->current_step++;
              
-             // Update position monitor with current step count
+             // Update position monitor with current step count (non-blocking)
              if (motion->position_monitor.driver) {
                  tmc_position_monitor_update_step_count(&motion->position_monitor, motion->steps_completed);
-                 
-                 // Check if we should read MSCNT at this step (every full step boundary)
-                 // Skip the first check until we've moved at least one full step from the initial position
-                 if (motion->steps_completed >= motion->position_monitor.poll_interval_steps && (motion->steps_completed % motion->position_monitor.poll_interval_steps) == 0) {
-                     // Read MSCNT directly in the step generation thread
-                     if (TMC2209_ReadRegister(motion->position_monitor.driver, (TMC2209_datagram_t *)&motion->position_monitor.driver->mscnt)) {
-                         uint16_t actual_mscnt = motion->position_monitor.driver->mscnt.reg.mscnt;
-                         uint16_t expected_mscnt = calculate_expected_mscnt(motion->steps_completed, motion->position_monitor.microstep_resolution);
-                         
-                         // Calculate instantaneous error with wrap-around handling
-                         int16_t difference = (int16_t)actual_mscnt - (int16_t)expected_mscnt;
-                         if (difference > 512) {
-                             difference -= 1024;
-                         } else if (difference < -512) {
-                             difference += 1024;
-                         }
-                         
-                                                  // Calculate step error accumulation
-                         int32_t step_error = 0;
-                         
-                         // For the first position check, we need to establish a baseline
-                         if (motion->position_monitor.error_check_count == 0) {
-                             // This is the first check - establish baseline for future comparisons
-                             printf("DEBUG: First position check at step %u - establishing baseline\n", motion->steps_completed);
-                             printf("DEBUG: Initial MSCNT was %u, current MSCNT is %u\n", 
-                                    motion->position_monitor.last_expected_mscnt, actual_mscnt);
-                             
-                             // Calculate expected MSCNT for this step
-                             uint16_t expected_mscnt_for_step = calculate_expected_mscnt(motion->steps_completed, motion->position_monitor.microstep_resolution);
-                             printf("DEBUG: Expected MSCNT for step %u: %u\n", motion->steps_completed, expected_mscnt_for_step);
-                             
-                             // Calculate the initial offset
-                             int16_t initial_offset = (int16_t)actual_mscnt - (int16_t)expected_mscnt_for_step;
-                             printf("DEBUG: Initial offset: %d MSCNT units\n", initial_offset);
-                             
-                             // Set the baseline for future comparisons
-                             motion->position_monitor.last_expected_step_count = motion->steps_completed;
-                             motion->position_monitor.last_expected_mscnt = actual_mscnt;
-                             
-                             // No step error for the first check
-                             step_error = 0;
-                         } else if (motion->position_monitor.error_check_count > 0) {
-                             // Calculate expected step difference
-                             int32_t expected_step_diff = (int32_t)motion->steps_completed - (int32_t)motion->position_monitor.last_expected_step_count;
-                             
-                             // Calculate MSCNT difference with wrap-around handling
-                             int32_t mscnt_diff = (int32_t)actual_mscnt - (int32_t)motion->position_monitor.last_expected_mscnt;
-                             if (mscnt_diff > 512) {
-                                 mscnt_diff -= 1024;
-                             } else if (mscnt_diff < -512) {
-                                 mscnt_diff += 1024;
-                             }
-                             
-                             // Convert MSCNT difference to step difference
-                             // For 8 microstep resolution: 256/8 = 32 MSCNT per microstep
-                             uint32_t mscnt_increment = 256 / motion->position_monitor.microstep_resolution;
-                             
-                             // Calculate how many steps the MSCNT change represents
-                             int32_t mscnt_step_diff = 0;
-                             if (mscnt_diff != 0) {
-                                 // Handle the case where MSCNT difference doesn't align perfectly with step boundaries
-                                 mscnt_step_diff = mscnt_diff / mscnt_increment;
-                                 
-                                 // Check for remainder to handle partial steps
-                                 int32_t remainder = mscnt_diff % mscnt_increment;
-                                 if (abs(remainder) > mscnt_increment / 2) {
-                                     // Round to nearest step
-                                     if (remainder > 0) {
-                                         mscnt_step_diff++;
-                                     } else {
-                                         mscnt_step_diff--;
-                                     }
-                                 }
-                             }
-                             
-                             // Calculate step error: (expected_step_diff) - (mscnt_step_diff)
-                             step_error = expected_step_diff - mscnt_step_diff;
-                             
-                             // Debug the calculation
-                             printf("DEBUG: step_diff=%d, mscnt_diff=%d, mscnt_increment=%u, mscnt_step_diff=%d, step_error=%d\n",
-                                    expected_step_diff, mscnt_diff, mscnt_increment, mscnt_step_diff, step_error);
-                             
-                             // Check if motor is moving the expected amount
-                             if (motion->position_monitor.error_check_count <= 3) {
-                                 printf("  Motor movement check: Expected %d steps, MSCNT changed by %d (should be %d per step)\n",
-                                        expected_step_diff, mscnt_diff, expected_step_diff * mscnt_increment);
-                                 
-                                 // Check if the movement is consistent
-                                 if (abs(mscnt_diff - (expected_step_diff * mscnt_increment)) <= mscnt_increment) {
-                                     printf("  ✓ Motor movement is consistent (within 1 microstep)\n");
-                                 } else {
-                                     printf("  ✗ Motor movement is inconsistent\n");
-                                 }
-                             }
-                         }
-                         
-                         // Update position monitor status
-                         if (pthread_mutex_lock(&motion->position_monitor.data_mutex) == 0) {
-                             motion->position_monitor.last_mscnt = actual_mscnt;
-                             motion->position_monitor.position_error = difference;
-                             motion->position_monitor.position_valid = (abs(difference) <= 2 * (256 / motion->position_monitor.microstep_resolution));
-                             motion->position_monitor.last_update_time_us = get_time_us();
-                             
-                             // Update error accumulation tracking
-                             if (motion->position_monitor.error_check_count == 0) {
-                                 // First check - just establish baseline, no error accumulation yet
-                                 motion->position_monitor.last_expected_step_count = motion->steps_completed;
-                                 motion->position_monitor.last_expected_mscnt = actual_mscnt;
-                                 motion->position_monitor.error_check_count++;
-                                 motion->position_monitor.average_step_error = 0.0f;
-                             } else {
-                                 // Subsequent checks - accumulate errors
-                                 motion->position_monitor.last_expected_step_count = motion->steps_completed;
-                                 motion->position_monitor.last_expected_mscnt = actual_mscnt;
-                                 motion->position_monitor.total_step_error += step_error;
-                                 motion->position_monitor.error_check_count++;
-                                 motion->position_monitor.average_step_error = (float)motion->position_monitor.total_step_error / motion->position_monitor.error_check_count;
-                             }
-                             
-                             pthread_mutex_unlock(&motion->position_monitor.data_mutex);
-                         }
-                         
-                         // Debug output for position checks
-                         if (motion->position_monitor.error_check_count == 1) {
-                             // First check - show baseline establishment
-                             printf("Position check at step %u (full step %u): MSCNT=%u (expected=%u), error=%d, BASELINE ESTABLISHED %s\n", 
-                                    motion->steps_completed, motion->steps_completed / motion->position_monitor.microstep_resolution, 
-                                    actual_mscnt, expected_mscnt, difference,
-                                    motion->position_monitor.position_valid ? "✓" : "✗");
-                         } else {
-                             // Subsequent checks - show error accumulation
-                             printf("Position check at step %u (full step %u): MSCNT=%u (expected=%u), error=%d, step_error=%d, total_error=%d, avg_error=%.2f %s\n", 
-                                    motion->steps_completed, motion->steps_completed / motion->position_monitor.microstep_resolution, 
-                                    actual_mscnt, expected_mscnt, difference, step_error, 
-                                    motion->position_monitor.total_step_error, motion->position_monitor.average_step_error,
-                                    motion->position_monitor.position_valid ? "✓" : "✗");
-                         }
-                         
-                         // Additional debug info for first few checks
-                         if (motion->position_monitor.error_check_count <= 3 && motion->position_monitor.error_check_count > 1) {
-                             printf("  Previous MSCNT: %u, Previous step: %u\n", 
-                                    motion->position_monitor.last_expected_mscnt, motion->position_monitor.last_expected_step_count);
-                         }
-                     }
-                 }
              }
              
              // Calculate new speed and timer period for next step
@@ -299,10 +163,10 @@
                      }
                  }
              }
-         } else {
-             // Wait a bit before checking again
-             usleep(10); // 10μs delay
          }
+         
+         // Small sleep to prevent busy waiting
+         usleep(1);
      }
      
      // Motion complete
@@ -410,43 +274,9 @@
      motion->thread_should_exit = false;
      motion->current_phase = PHASE_ACCEL_INCREASE;
      
-     // Update position monitor with microstep resolution and initialize properly
+     // Update position monitor with microstep resolution
      motion->position_monitor.microstep_resolution = microstep_resolution;
-     if (motion->position_monitor.driver) {
-         // Initialize polling interval for step-based monitoring
-         motion->position_monitor.poll_interval_steps = microstep_resolution;
-         
-         // Initialize position monitor state before motion starts
-         if (TMC2209_ReadRegister(motion->position_monitor.driver, (TMC2209_datagram_t *)&motion->position_monitor.driver->mscnt)) {
-             uint16_t initial_mscnt = motion->position_monitor.driver->mscnt.reg.mscnt;
-             uint32_t initial_step_count = calculate_step_count_from_mscnt(initial_mscnt, microstep_resolution);
-             
-             // Initialize position monitor state
-             motion->position_monitor.last_step_count = initial_step_count;
-             motion->position_monitor.last_step_count_update_time_us = get_time_us();
-             motion->position_monitor.last_polled_step_count = initial_step_count;
-             motion->position_monitor.steps_since_last_poll = 0;
-             
-             // Initialize error tracking with current values
-             motion->position_monitor.last_expected_step_count = initial_step_count;
-             motion->position_monitor.last_expected_mscnt = initial_mscnt;
-             motion->position_monitor.total_step_error = 0;
-             motion->position_monitor.error_check_count = 0;
-             motion->position_monitor.average_step_error = 0.0f;
-             
-             printf("Position monitoring initialized: MSCNT=%u, initial step count=%u, polling every %u microsteps (every full step)\n", 
-                    initial_mscnt, initial_step_count, microstep_resolution);
-             printf("DEBUG: Initial MSCNT=%u corresponds to step %u (microstep resolution=%u)\n", 
-                    initial_mscnt, initial_step_count, microstep_resolution);
-             
-             // Calculate what the expected MSCNT should be for step 0
-             uint16_t expected_mscnt_at_zero = calculate_expected_mscnt(0, microstep_resolution);
-             printf("DEBUG: Expected MSCNT at step 0: %u, Offset: %d\n", 
-                    expected_mscnt_at_zero, (int16_t)initial_mscnt - (int16_t)expected_mscnt_at_zero);
-         } else {
-             printf("WARNING: Failed to read MSCNT register for initial synchronization\n");
-         }
-     }
+     motion->position_monitor.poll_interval_steps = microstep_resolution;
      
      // Create motion thread
      if (pthread_create(&motion->motion_thread, NULL, s_curve_motion_thread_function, motion) != 0) {
@@ -459,6 +289,21 @@
      }
      
      motion->thread_running = true;
+     
+     // Start position monitoring AFTER motion thread has started and synchronized
+     if (motion->position_monitor.driver) {
+         // Wait a moment for motion thread to initialize and synchronize
+         usleep(10000); // 10ms
+         
+         // Update position monitor with current synchronized step count
+         tmc_position_monitor_update_step_count(&motion->position_monitor, motion->steps_completed);
+         
+         // Start position monitoring thread
+         if (!tmc_position_monitor_start(&motion->position_monitor)) {
+             printf("WARNING: Failed to start position monitoring thread - continuing without position tracking\n");
+             motion->position_monitor.driver = NULL;
+         }
+     }
      
      printf("S-curve motion started: %.2f degrees, %.2f RPM max, %s direction\n",
             target_angle_degrees, max_speed_rpm, direction ? "clockwise" : "counter-clockwise");
@@ -481,8 +326,10 @@
          motion->thread_running = false;
      }
      
-     // Position monitoring is handled directly in step generation thread
-     // No separate thread to stop
+     // Stop position monitoring thread
+     if (motion->position_monitor.driver) {
+         tmc_position_monitor_stop(&motion->position_monitor);
+     }
      
      // Disable motor
      if (motion->gpio_ctx) {
@@ -845,7 +692,11 @@ static void* position_monitor_thread_function(void *arg) {
         return NULL;
     }
     
-    printf("Position monitoring thread started (microstep-based polling)\n");
+    printf("Position monitoring thread started (timed polling)\n");
+    
+    uint64_t last_poll_time = get_time_us();
+    uint32_t last_step_count = 0;
+    bool first_poll = true;
     
     while (monitor->monitoring_active) {
         // Check if driver is still valid
@@ -854,24 +705,31 @@ static void* position_monitor_thread_function(void *arg) {
             break;
         }
         
-        bool should_poll = false;
+        uint64_t current_time = get_time_us();
         uint32_t current_step_count = 0;
+        bool should_poll = false;
         
-        // Check if we should poll based on microstep boundaries
+        // Get current step count under mutex protection
         if (pthread_mutex_lock(&monitor->data_mutex) == 0) {
             current_step_count = monitor->last_step_count;
-            
-            // Poll if we've completed enough steps since last poll
-            // Only poll when we reach a full step boundary (step count is multiple of microstep_resolution)
-            if (current_step_count > 0 && (current_step_count % monitor->poll_interval_steps) == 0) {
-                // Check if we haven't already polled at this step
-                if (current_step_count != monitor->last_polled_step_count) {
-                    should_poll = true;
-                    monitor->last_polled_step_count = current_step_count;
-                }
-            }
-            
             pthread_mutex_unlock(&monitor->data_mutex);
+        }
+        
+        // Poll if:
+        // 1. We're at a full step boundary (step count is multiple of microstep_resolution)
+        // 2. At least 1ms has passed since last poll (to avoid excessive UART traffic)
+        // 3. Either this is the first poll OR we've moved to a new step boundary
+        if (current_step_count > 0 && 
+            (current_step_count % monitor->poll_interval_steps) == 0 &&
+            (current_time - last_poll_time) >= 1000) { // 1ms minimum interval
+            
+            // For first poll, always do it. For subsequent polls, check if we've moved to a new boundary
+            if (first_poll || current_step_count != last_step_count) {
+                should_poll = true;
+                last_step_count = current_step_count;
+                last_poll_time = current_time;
+                first_poll = false;
+            }
         }
         
         if (should_poll) {
@@ -880,22 +738,42 @@ static void* position_monitor_thread_function(void *arg) {
                 uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;
                 uint16_t expected_mscnt = calculate_expected_mscnt(current_step_count, monitor->microstep_resolution);
                 
-                // Calculate instantaneous error with wrap-around handling
-                int16_t difference = (int16_t)actual_mscnt - (int16_t)expected_mscnt;
+                // Calculate relative error (relative to initial position)
+                // The error should be 0 when we're at the initial position, regardless of where that is
+                int32_t relative_step_count = (int32_t)current_step_count - (int32_t)monitor->initial_step_count;
+                uint16_t expected_mscnt_absolute = 0;
+                
+                if (relative_step_count == 0) {
+                    // We're at the initial position - expected MSCNT should equal initial MSCNT
+                    expected_mscnt_absolute = monitor->initial_mscnt;
+                } else if (relative_step_count > 0) {
+                    // We've moved forward from initial position
+                    uint16_t expected_mscnt_relative = calculate_expected_mscnt((uint32_t)relative_step_count, monitor->microstep_resolution);
+                    expected_mscnt_absolute = (monitor->initial_mscnt + expected_mscnt_relative) % 1024;
+                } else {
+                    // We've moved backward from initial position (shouldn't happen in normal operation)
+                    uint16_t expected_mscnt_relative = calculate_expected_mscnt((uint32_t)(-relative_step_count), monitor->microstep_resolution);
+                    expected_mscnt_absolute = (monitor->initial_mscnt - expected_mscnt_relative + 1024) % 1024;
+                }
+                
+                // Calculate instantaneous error with wrap-around handling (relative to initial)
+                int16_t difference = (int16_t)actual_mscnt - (int16_t)expected_mscnt_absolute;
                 if (difference > 512) {
                     difference -= 1024;
                 } else if (difference < -512) {
                     difference += 1024;
                 }
                 
-                // Calculate step error accumulation: (expected_now - expected_last) - (mscnt_now - mscnt_last)
+                // Calculate step error accumulation: compare expected vs actual step progress
                 int32_t step_error = 0;
                 if (monitor->error_check_count > 0) {
-                    // Calculate expected step difference
+                    // Calculate expected step difference since last check
                     int32_t expected_step_diff = (int32_t)current_step_count - (int32_t)monitor->last_expected_step_count;
                     
-                    // Calculate MSCNT difference with wrap-around handling
+                    // Calculate actual step difference based on MSCNT change
                     int32_t mscnt_diff = (int32_t)actual_mscnt - (int32_t)monitor->last_expected_mscnt;
+                    
+                    // Handle MSCNT wrap-around properly
                     if (mscnt_diff > 512) {
                         mscnt_diff -= 1024;
                     } else if (mscnt_diff < -512) {
@@ -903,23 +781,32 @@ static void* position_monitor_thread_function(void *arg) {
                     }
                     
                     // Convert MSCNT difference to step difference
-                    uint32_t mscnt_increment = 256 / monitor->microstep_resolution;
-                    int32_t mscnt_step_diff = mscnt_diff / mscnt_increment;
+                    // MSCNT increments by 256 per full step
+                    // Use floating point division to get accurate step count
+                    float mscnt_full_step_diff_float = (float)mscnt_diff / 256.0f;
+                    int32_t mscnt_full_step_diff = (int32_t)round(mscnt_full_step_diff_float);
+                    int32_t actual_step_diff = mscnt_full_step_diff * monitor->microstep_resolution;
                     
-                    // Calculate step error: (expected_step_diff) - (mscnt_step_diff)
-                    step_error = expected_step_diff - mscnt_step_diff;
+                    // Step error = expected step difference - actual step difference
+                    step_error = expected_step_diff - actual_step_diff;
+                    
+                    // Debug the step error calculation
+                    printf("DEBUG: step_diff=%d, mscnt_diff=%d, mscnt_increment=%d, mscnt_step_diff=%d, step_error=%d\n",
+                           expected_step_diff, mscnt_diff, 256, mscnt_full_step_diff, step_error);
+                    printf("DEBUG: last_expected_mscnt=%u, actual_mscnt=%u\n",
+                           monitor->last_expected_mscnt, actual_mscnt);
                 }
                 
                 // Update status under mutex protection
                 if (pthread_mutex_lock(&monitor->data_mutex) == 0) {
                     monitor->last_mscnt = actual_mscnt;
                     monitor->position_error = difference;
-                    monitor->position_valid = (abs(difference) <= 2 * (256 / monitor->microstep_resolution));
+                    monitor->position_valid = (abs(difference) <= 512); // Allow ±2 full steps (512 MSCNT units)
                     monitor->last_update_time_us = get_time_us();
                     
                     // Update error accumulation tracking
                     monitor->last_expected_step_count = current_step_count;
-                    monitor->last_expected_mscnt = expected_mscnt;
+                    monitor->last_expected_mscnt = expected_mscnt_absolute;
                     monitor->total_step_error += step_error;
                     monitor->error_check_count++;
                     monitor->average_step_error = (float)monitor->total_step_error / monitor->error_check_count;
@@ -930,16 +817,19 @@ static void* position_monitor_thread_function(void *arg) {
                 // Debug output for position checks with error accumulation
                 printf("Position check at step %u (full step %u): MSCNT=%u (expected=%u), error=%d, step_error=%d, total_error=%d, avg_error=%.2f %s\n", 
                        current_step_count, current_step_count / monitor->microstep_resolution, 
-                       actual_mscnt, expected_mscnt, difference, step_error, 
+                       actual_mscnt, expected_mscnt_absolute, difference, step_error, 
                        monitor->total_step_error, monitor->average_step_error,
                        monitor->position_valid ? "✓" : "✗");
+                printf("DEBUG: relative_step_count=%d, expected_mscnt_absolute=%u, initial_mscnt=%u\n",
+                       relative_step_count, expected_mscnt_absolute, monitor->initial_mscnt);
             } else {
                 printf("WARNING: Failed to read MSCNT register at step %u\n", current_step_count);
             }
         }
         
-        // No sleep - pure step-driven polling
-        // The thread will wake up when step count is updated by the motion thread
+        // Sleep for a short time to avoid busy waiting
+        // This prevents the thread from consuming too much CPU while still being responsive
+        usleep(100); // 100μs sleep - much shorter than step timing
     }
     
     printf("Position monitoring thread stopped\n");
@@ -963,9 +853,7 @@ bool tmc_position_monitor_init(tmc_position_monitor_t *monitor, TMC2209_t *drive
     monitor->last_update_time_us = 0;
     monitor->last_step_count_update_time_us = 0;
     
-    // Initialize microstep-based polling
-    monitor->last_polled_step_count = 0;
-    monitor->steps_since_last_poll = 0;
+    // Initialize polling configuration
     monitor->poll_interval_steps = microstep_resolution;  // Poll every full step (microstep_resolution microsteps)
     
     // Initialize error accumulation tracking
@@ -974,6 +862,10 @@ bool tmc_position_monitor_init(tmc_position_monitor_t *monitor, TMC2209_t *drive
     monitor->total_step_error = 0;
     monitor->error_check_count = 0;
     monitor->average_step_error = 0.0f;
+    
+    // Initialize initial position tracking
+    monitor->initial_mscnt = 0;
+    monitor->initial_step_count = 0;
     
     if (pthread_mutex_init(&monitor->data_mutex, NULL) != 0) {
         printf("ERROR: Failed to initialize position monitor mutex\n");
@@ -1007,15 +899,17 @@ bool tmc_position_monitor_start(tmc_position_monitor_t *monitor) {
     // Stop any existing monitoring
     tmc_position_monitor_stop(monitor);
 
-    // Synchronize initial step count with MSCNT
+    // Synchronize initial step count with current software step count and MSCNT
     if (TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)) {
         uint16_t mscnt = monitor->driver->mscnt.reg.mscnt;
-        uint32_t step_count = calculate_step_count_from_mscnt(mscnt, monitor->microstep_resolution);
+        
+        // Use the current software step count as the initial position
+        uint32_t step_count = monitor->last_step_count;
+        
         if (pthread_mutex_lock(&monitor->data_mutex) == 0) {
-            monitor->last_step_count = step_count;
-            monitor->last_step_count_update_time_us = get_time_us();
-            monitor->last_polled_step_count = step_count;  // Initialize polling counter
-            monitor->steps_since_last_poll = 0;
+            // Store initial position for relative error calculation
+            monitor->initial_step_count = step_count;
+            monitor->initial_mscnt = mscnt;
             
             // Initialize error tracking with current values
             monitor->last_expected_step_count = step_count;
@@ -1080,15 +974,6 @@ void tmc_position_monitor_update_step_count(tmc_position_monitor_t *monitor, uin
     if (pthread_mutex_lock(&monitor->data_mutex) == 0) {
         monitor->last_step_count = step_count;
         monitor->last_step_count_update_time_us = get_time_us();
-        
-        // Track steps since last poll for microstep-based polling
-        if (step_count >= monitor->last_polled_step_count) {
-            monitor->steps_since_last_poll = step_count - monitor->last_polled_step_count;
-        } else {
-            // Handle step count wraparound (unlikely but possible)
-            monitor->steps_since_last_poll = step_count;
-        }
-        
         pthread_mutex_unlock(&monitor->data_mutex);
     }
 }
@@ -1132,10 +1017,10 @@ bool tmc_position_monitor_get_error_stats(tmc_position_monitor_t *monitor, int32
 // ============================================================================
  
  uint16_t calculate_expected_mscnt(uint32_t step_count, uint16_t microstep_resolution) {
-     // MSCNT increments by 256/microstep_resolution for each step
-     // MSCNT wraps around from 1023 to 0
-     uint32_t mscnt_increment = 256 / microstep_resolution;
-     uint32_t total_mscnt = step_count * mscnt_increment;
+     // MSCNT increments by 256 per FULL STEP, not per microstep
+     // Convert microsteps to full steps first using floating point for accuracy
+     float full_steps = (float)step_count / (float)microstep_resolution;
+     uint32_t total_mscnt = (uint32_t)(full_steps * 256.0f);
      
      // Apply wrap-around (MSCNT is 10-bit, so 0-1023)
      return (uint16_t)(total_mscnt % 1024);
@@ -1143,9 +1028,9 @@ bool tmc_position_monitor_get_error_stats(tmc_position_monitor_t *monitor, int32
 
 // Helper function to calculate step count from MSCNT
 static uint32_t calculate_step_count_from_mscnt(uint16_t mscnt, uint16_t microstep_resolution) {
-    // MSCNT increments by 256/microstep_resolution for each step
-    uint32_t mscnt_increment = 256 / microstep_resolution;
-    return mscnt / mscnt_increment;
+    // MSCNT increments by 256 per FULL STEP, not per microstep
+    // Convert MSCNT directly to microsteps: (mscnt * microstep_resolution) / 256
+    return (mscnt * microstep_resolution) / 256;
 }
  
  bool check_mscnt_position(TMC2209_t *driver, uint32_t step_count, uint16_t microstep_resolution) {
