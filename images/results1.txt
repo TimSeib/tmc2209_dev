@@ -1,0 +1,1564 @@
+TMC2209 S-Curve Motion Test
+===========================
+
+Initializing GPIO...
+TMC2209 GPIO initialized successfully
+GPIO initialized successfully
+Initializing TMC2209...
+TMC2209 initialized successfully
+Setting motor current to 500mA...
+Motor current: 582 mA
+
+Initializing S-curve motion control...
+Position monitor initialized successfully (polling every 0 microsteps)
+S-curve motion control initialized with MSCNT position tracking
+=== S-Curve Motion Parameters ===
+
+Enter target angle (degrees, output shaft): 45
+Enter maximum speed (RPM, input shaft): 30
+Enter maximum acceleration (Hz/sec, input shaft): 90  0.5
+Enter jerk rate (Hz/sec², input shaft): 0.002
+Enter starting speed (Hz, input shaft): 0.  100
+Enter starting acceleration (Hz/sec, input shaft): 0
+Enter gear ratio (e.g., 100 for 100:1 reduction): 99.548
+Enter direction (c = clockwise, w = counter-clockwise): 
+=== Motion Parameters Summary ===
+- Target angle: 45.00 degrees (output shaft)
+- Maximum speed: 30.00 RPM (input shaft)
+- Maximum acceleration: 0.50 Hz/sec (input shaft)
+- Jerk rate: 0.002 Hz/sec² (input shaft)
+- Starting speed: 100.00 Hz (input shaft)
+- Starting acceleration: 0.00 Hz/sec (input shaft)
+- Gear ratio: 99:1
+- Direction: Counter-clockwise
+- Microstep resolution: 1/16
+
+=== Calculated Parameters ===
+- Steps per revolution: 3200
+- Total steps: 39600
+- Output shaft speed: 0.30 RPM
+- Maximum step frequency: 1600.00 Hz
+- Minimum timer period: 625 μs
+- Position monitoring: Every 16 microsteps (every full step)
+
+Starting S-curve motion...
+Position monitoring stopped
+S-curve motion stopped
+S-curve profile calculation:
+  Total steps: 39600
+  Max speed: 1600.00 Hz
+  Max acceleration: 0.50 Hz/step
+  Jerk rate: 0.002 Hz/step²
+  Jerk phase steps (increase): 249
+  Speed after jerk: 162.00 Hz
+  Constant accel steps: 2875
+  Jerk phase steps (decrease): 249
+  Total accel steps: 3373
+  Acceleration phase: 3373 steps
+  Constant speed phase: 32854 steps
+  Deceleration phase: 3373 steps
+
+  Sub-phase breakdown:
+    Accel jerk increase: 249 steps
+    Accel constant: 2875 steps
+    Accel jerk decrease: 249 steps
+    Decel jerk increase: 249 steps
+    Decel constant: 2875 steps
+    Decel jerk decrease: 249 steps
+Motion synchronized: starting from step 0 (motor position)
+Starting S-curve motion: 39600 steps
+Initial speed: 100.00 Hz, timer period: 10000 μs
+Position monitoring stopped
+Position monitor synchronized: MSCNT=792, initial step count=2, polling every 16 microsteps
+DEBUG: Initial MSCNT=792 corresponds to step 2 (microstep resolution=16)
+DEBUG: Expected MSCNT at step 0: 0, Offset: 792
+Position monitoring started successfully
+S-curve motion started: 45.00 degrees, 30.00 RPM max, counter-clockwise direction
+
+Monitoring motion progress...
+Position checks will occur every 16 microsteps (every full step)
+Press Ctrl+C to stop motion
+
+Position monitoring thread started (timed polling)
+Position check at step 16 (full step 1): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=14, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 32 (full step 2): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=30, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=504
+Position check at step 48 (full step 3): MSCNT=504 (expected=504), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=46, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=760
+Position check at step 64 (full step 4): MSCNT=760 (expected=760), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=62, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1016
+Position check at step 80 (full step 5): MSCNT=1016 (expected=1016), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=78, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=248
+Position check at step 96 (full step 6): MSCNT=248 (expected=248), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=94, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=504
+Position check at step 112 (full step 7): MSCNT=504 (expected=504), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=110, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=760
+Position check at step 128 (full step 8): MSCNT=760 (expected=760), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=126, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1016
+Position check at step 144 (full step 9): MSCNT=1016 (expected=1016), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=142, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=256, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=248
+Position check at step 160 (full step 10): MSCNT=248 (expected=248), error=0, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=158, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 176 (full step 11): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=174, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 192 (full step 12): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=190, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 208 (full step 13): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=206, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 224 (full step 14): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=222, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 240 (full step 15): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=238, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 256 (full step 16): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=254, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 272 (full step 17): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=270, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 288 (full step 18): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=286, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 304 (full step 19): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=302, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 320 (full step 20): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=318, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 336 (full step 21): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=334, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 352 (full step 22): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=350, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 368 (full step 23): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=366, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 384 (full step 24): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=382, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 400 (full step 25): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=398, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 416 (full step 26): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=414, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 432 (full step 27): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=430, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 448 (full step 28): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=446, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 464 (full step 29): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=462, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 480 (full step 30): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=478, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 496 (full step 31): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=494, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 512 (full step 32): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=510, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 528 (full step 33): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=526, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 544 (full step 34): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=542, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 560 (full step 35): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=558, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 576 (full step 36): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=574, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 592 (full step 37): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=590, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 608 (full step 38): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=606, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 624 (full step 39): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=622, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=763
+Position check at step 640 (full step 40): MSCNT=763 (expected=760), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=638, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 656 (full step 41): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=654, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 672 (full step 42): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=670, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 688 (full step 43): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=686, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=763
+Position check at step 704 (full step 44): MSCNT=763 (expected=760), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=702, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1020
+Position check at step 720 (full step 45): MSCNT=1020 (expected=1016), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=718, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 736 (full step 46): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=734, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=507
+Position check at step 752 (full step 47): MSCNT=507 (expected=504), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=750, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=763
+Position check at step 768 (full step 48): MSCNT=763 (expected=760), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=766, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1019
+Position check at step 784 (full step 49): MSCNT=1019 (expected=1016), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=782, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 800 (full step 50): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=798, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=508
+Position check at step 816 (full step 51): MSCNT=508 (expected=504), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=814, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=764
+Position check at step 832 (full step 52): MSCNT=764 (expected=760), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=830, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1019
+Position check at step 848 (full step 53): MSCNT=1019 (expected=1016), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=846, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=252
+Position check at step 864 (full step 54): MSCNT=252 (expected=248), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=862, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=507
+Position check at step 880 (full step 55): MSCNT=507 (expected=504), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=878, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=764
+Position check at step 896 (full step 56): MSCNT=764 (expected=760), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=894, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1020
+Position check at step 912 (full step 57): MSCNT=1020 (expected=1016), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=910, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 928 (full step 58): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=926, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=508
+Position check at step 944 (full step 59): MSCNT=508 (expected=504), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=942, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=764
+Position check at step 960 (full step 60): MSCNT=764 (expected=760), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=958, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1020
+Position check at step 976 (full step 61): MSCNT=1020 (expected=1016), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=974, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=252
+Position check at step 992 (full step 62): MSCNT=252 (expected=248), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=990, expected_mscnt_absolute=248, initial_mscnt=792
+Step 1000/39600 (2.5%): 537.50 Hz, 1860 μs, Phase: Accel Constant
+  Position: Step=1000, MSCNT=252, Error=4, Age=13 ms ✓
+Progress: 2.5% (1007/39600 steps) - Accel Constant
+  Current speed: 541.00 Hz, Timer: 1848 μs, Phase: Accel Constant
+  Position: Step=1007, MSCNT=252, Error=4, Age=27 ms ✓
+  Error Stats: Total=0, Checks=62, Avg=0.00 steps
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=509
+Position check at step 1008 (full step 63): MSCNT=509 (expected=504), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1006, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=764
+Position check at step 1024 (full step 64): MSCNT=764 (expected=760), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1022, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1021
+Position check at step 1040 (full step 65): MSCNT=1021 (expected=1016), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1038, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=253
+Position check at step 1056 (full step 66): MSCNT=253 (expected=248), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1054, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=508
+Position check at step 1072 (full step 67): MSCNT=508 (expected=504), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1070, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=765
+Position check at step 1088 (full step 68): MSCNT=765 (expected=760), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1086, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1021
+Position check at step 1104 (full step 69): MSCNT=1021 (expected=1016), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1102, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=252
+Position check at step 1120 (full step 70): MSCNT=252 (expected=248), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1118, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=508
+Position check at step 1136 (full step 71): MSCNT=508 (expected=504), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1134, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=765
+Position check at step 1152 (full step 72): MSCNT=765 (expected=760), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1150, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1021
+Position check at step 1168 (full step 73): MSCNT=1021 (expected=1016), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1166, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=253
+Position check at step 1184 (full step 74): MSCNT=253 (expected=248), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1182, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=508
+Position check at step 1200 (full step 75): MSCNT=508 (expected=504), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1198, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=260, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=764
+Position check at step 1216 (full step 76): MSCNT=764 (expected=760), error=4, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1214, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1021
+Position check at step 1232 (full step 77): MSCNT=1021 (expected=1016), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1230, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=253
+Position check at step 1248 (full step 78): MSCNT=253 (expected=248), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1246, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=509
+Position check at step 1264 (full step 79): MSCNT=509 (expected=504), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1262, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=765
+Position check at step 1280 (full step 80): MSCNT=765 (expected=760), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1278, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1022
+Position check at step 1296 (full step 81): MSCNT=1022 (expected=1016), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1294, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=254
+Position check at step 1312 (full step 82): MSCNT=254 (expected=248), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1310, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=510
+Position check at step 1328 (full step 83): MSCNT=510 (expected=504), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1326, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=767
+Position check at step 1344 (full step 84): MSCNT=767 (expected=760), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1342, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1022
+Position check at step 1360 (full step 85): MSCNT=1022 (expected=1016), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1358, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=254
+Position check at step 1376 (full step 86): MSCNT=254 (expected=248), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1374, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=509
+Position check at step 1392 (full step 87): MSCNT=509 (expected=504), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1390, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=766
+Position check at step 1408 (full step 88): MSCNT=766 (expected=760), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1406, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1021
+Position check at step 1424 (full step 89): MSCNT=1021 (expected=1016), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1422, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=254
+Position check at step 1440 (full step 90): MSCNT=254 (expected=248), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1438, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=511
+Position check at step 1456 (full step 91): MSCNT=511 (expected=504), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1454, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=766
+Position check at step 1472 (full step 92): MSCNT=766 (expected=760), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1470, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1022
+Position check at step 1488 (full step 93): MSCNT=1022 (expected=1016), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1486, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=254
+Position check at step 1504 (full step 94): MSCNT=254 (expected=248), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1502, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=511
+Position check at step 1520 (full step 95): MSCNT=511 (expected=504), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1518, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=767
+Position check at step 1536 (full step 96): MSCNT=767 (expected=760), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1534, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1022
+Position check at step 1552 (full step 97): MSCNT=1022 (expected=1016), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1550, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=255
+Position check at step 1568 (full step 98): MSCNT=255 (expected=248), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1566, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=261, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=509
+Position check at step 1584 (full step 99): MSCNT=509 (expected=504), error=5, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1582, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=768
+Position check at step 1600 (full step 100): MSCNT=768 (expected=760), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1598, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1022
+Position check at step 1616 (full step 101): MSCNT=1022 (expected=1016), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1614, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=254
+Position check at step 1632 (full step 102): MSCNT=254 (expected=248), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1630, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=511
+Position check at step 1648 (full step 103): MSCNT=511 (expected=504), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1646, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=262, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=766
+Position check at step 1664 (full step 104): MSCNT=766 (expected=760), error=6, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1662, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=0
+Position check at step 1680 (full step 105): MSCNT=0 (expected=1016), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1678, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=255
+Position check at step 1696 (full step 106): MSCNT=255 (expected=248), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1694, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=512
+Position check at step 1712 (full step 107): MSCNT=512 (expected=504), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1710, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=767
+Position check at step 1728 (full step 108): MSCNT=767 (expected=760), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1726, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1023
+Position check at step 1744 (full step 109): MSCNT=1023 (expected=1016), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1742, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=255
+Position check at step 1760 (full step 110): MSCNT=255 (expected=248), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1758, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=511
+Position check at step 1776 (full step 111): MSCNT=511 (expected=504), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1774, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=768
+Position check at step 1792 (full step 112): MSCNT=768 (expected=760), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1790, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1
+Position check at step 1808 (full step 113): MSCNT=1 (expected=1016), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1806, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=255
+Position check at step 1824 (full step 114): MSCNT=255 (expected=248), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1822, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=512
+Position check at step 1840 (full step 115): MSCNT=512 (expected=504), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1838, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=767
+Position check at step 1856 (full step 116): MSCNT=767 (expected=760), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1854, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=0
+Position check at step 1872 (full step 117): MSCNT=0 (expected=1016), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1870, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=255
+Position check at step 1888 (full step 118): MSCNT=255 (expected=248), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1886, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=512
+Position check at step 1904 (full step 119): MSCNT=512 (expected=504), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1902, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 1920 (full step 120): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1918, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1023
+Position check at step 1936 (full step 121): MSCNT=1023 (expected=1016), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1934, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=263, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=255
+Position check at step 1952 (full step 122): MSCNT=255 (expected=248), error=7, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1950, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=512
+Position check at step 1968 (full step 123): MSCNT=512 (expected=504), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1966, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 1984 (full step 124): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1982, expected_mscnt_absolute=760, initial_mscnt=792
+Step 2000/39600 (5.1%): 1037.50 Hz, 963 μs, Phase: Accel Constant
+  Position: Step=2000, MSCNT=769, Error=9, Age=13 ms ✓
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=0
+Position check at step 2000 (full step 125): MSCNT=0 (expected=1016), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=1998, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=256
+Position check at step 2016 (full step 126): MSCNT=256 (expected=248), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2014, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=514
+Position check at step 2032 (full step 127): MSCNT=514 (expected=504), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2030, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=768
+Position check at step 2048 (full step 128): MSCNT=768 (expected=760), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2046, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=0
+Position check at step 2064 (full step 129): MSCNT=0 (expected=1016), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2062, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=257
+Position check at step 2080 (full step 130): MSCNT=257 (expected=248), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2078, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=264, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=512
+Position check at step 2096 (full step 131): MSCNT=512 (expected=504), error=8, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2094, expected_mscnt_absolute=504, initial_mscnt=792
+Progress: 5.3% (2106/39600 steps) - Accel Constant
+  Current speed: 1090.50 Hz, Timer: 917 μs, Phase: Accel Constant
+  Position: Step=2106, MSCNT=512, Error=8, Age=7 ms ✓
+  Error Stats: Total=0, Checks=131, Avg=0.00 steps
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 2112 (full step 132): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2110, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=2
+Position check at step 2128 (full step 133): MSCNT=2 (expected=1016), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2126, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=257
+Position check at step 2144 (full step 134): MSCNT=257 (expected=248), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2142, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=514
+Position check at step 2160 (full step 135): MSCNT=514 (expected=504), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2158, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=770
+Position check at step 2176 (full step 136): MSCNT=770 (expected=760), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2174, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=2
+Position check at step 2192 (full step 137): MSCNT=2 (expected=1016), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2190, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=258
+Position check at step 2208 (full step 138): MSCNT=258 (expected=248), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2206, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=514
+Position check at step 2224 (full step 139): MSCNT=514 (expected=504), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2222, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 2240 (full step 140): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2238, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=2
+Position check at step 2256 (full step 141): MSCNT=2 (expected=1016), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2254, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=258
+Position check at step 2272 (full step 142): MSCNT=258 (expected=248), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2270, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=514
+Position check at step 2288 (full step 143): MSCNT=514 (expected=504), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2286, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 2304 (full step 144): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2302, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=2
+Position check at step 2320 (full step 145): MSCNT=2 (expected=1016), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2318, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=257
+Position check at step 2336 (full step 146): MSCNT=257 (expected=248), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2334, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 2352 (full step 147): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2350, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=771
+Position check at step 2368 (full step 148): MSCNT=771 (expected=760), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2366, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1
+Position check at step 2384 (full step 149): MSCNT=1 (expected=1016), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2382, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=257
+Position check at step 2400 (full step 150): MSCNT=257 (expected=248), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2398, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=513
+Position check at step 2416 (full step 151): MSCNT=513 (expected=504), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2414, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 2432 (full step 152): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2430, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1
+Position check at step 2448 (full step 153): MSCNT=1 (expected=1016), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2446, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=258
+Position check at step 2464 (full step 154): MSCNT=258 (expected=248), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2462, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 2480 (full step 155): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2478, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=772
+Position check at step 2496 (full step 156): MSCNT=772 (expected=760), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2494, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=2
+Position check at step 2512 (full step 157): MSCNT=2 (expected=1016), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2510, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=258
+Position check at step 2528 (full step 158): MSCNT=258 (expected=248), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2526, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=513
+Position check at step 2544 (full step 159): MSCNT=513 (expected=504), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2542, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=265, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=769
+Position check at step 2560 (full step 160): MSCNT=769 (expected=760), error=9, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2558, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 2576 (full step 161): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2574, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=260
+Position check at step 2592 (full step 162): MSCNT=260 (expected=248), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2590, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 2608 (full step 163): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2606, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=770
+Position check at step 2624 (full step 164): MSCNT=770 (expected=760), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2622, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=2
+Position check at step 2640 (full step 165): MSCNT=2 (expected=1016), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2638, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=259
+Position check at step 2656 (full step 166): MSCNT=259 (expected=248), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2654, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 2672 (full step 167): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2670, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=770
+Position check at step 2688 (full step 168): MSCNT=770 (expected=760), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2686, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 2704 (full step 169): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2702, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=259
+Position check at step 2720 (full step 170): MSCNT=259 (expected=248), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2718, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=516
+Position check at step 2736 (full step 171): MSCNT=516 (expected=504), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2734, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=770
+Position check at step 2752 (full step 172): MSCNT=770 (expected=760), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2750, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 2768 (full step 173): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2766, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=259
+Position check at step 2784 (full step 174): MSCNT=259 (expected=248), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2782, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=516
+Position check at step 2800 (full step 175): MSCNT=516 (expected=504), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2798, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=770
+Position check at step 2816 (full step 176): MSCNT=770 (expected=760), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2814, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 2832 (full step 177): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2830, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 2848 (full step 178): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2846, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 2864 (full step 179): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2862, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 2880 (full step 180): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2878, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 2896 (full step 181): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2894, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=266, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=258
+Position check at step 2912 (full step 182): MSCNT=258 (expected=248), error=10, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2910, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 2928 (full step 183): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2926, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=771
+Position check at step 2944 (full step 184): MSCNT=771 (expected=760), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2942, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 2960 (full step 185): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2958, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 2976 (full step 186): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2974, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 2992 (full step 187): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=2990, expected_mscnt_absolute=504, initial_mscnt=792
+Step 3000/39600 (7.6%): 1537.50 Hz, 650 μs, Phase: Accel Constant
+  Position: Step=3000, MSCNT=518, Error=14, Age=3 ms ✓
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=775
+Position check at step 3008 (full step 188): MSCNT=775 (expected=760), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3006, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 3024 (full step 189): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3022, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 3040 (full step 190): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3038, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=516
+Position check at step 3056 (full step 191): MSCNT=516 (expected=504), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3054, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=775
+Position check at step 3072 (full step 192): MSCNT=775 (expected=760), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3070, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 3088 (full step 193): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3086, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 3104 (full step 194): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3102, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=519
+Position check at step 3120 (full step 195): MSCNT=519 (expected=504), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3118, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3136 (full step 196): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3134, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 3152 (full step 197): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3150, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 3168 (full step 198): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3166, expected_mscnt_absolute=248, initial_mscnt=792
+Progress: 8.0% (3180/39600 steps) - Accel Jerk Decrease
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Accel Jerk Decrease
+  Position: Step=3180, MSCNT=261, Error=13, Age=6 ms ✓
+  Error Stats: Total=0, Checks=198, Avg=0.00 steps
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=519
+Position check at step 3184 (full step 199): MSCNT=519 (expected=504), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3182, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 3200 (full step 200): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3198, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 3216 (full step 201): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3214, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 3232 (full step 202): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3230, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 3248 (full step 203): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3246, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=775
+Position check at step 3264 (full step 204): MSCNT=775 (expected=760), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3262, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 3280 (full step 205): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3278, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=259
+Position check at step 3296 (full step 206): MSCNT=259 (expected=248), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3294, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 3312 (full step 207): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3310, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3328 (full step 208): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3326, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 3344 (full step 209): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3342, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 3360 (full step 210): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3358, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 3376 (full step 211): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3374, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3392 (full step 212): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3390, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 3408 (full step 213): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3406, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=263
+Position check at step 3424 (full step 214): MSCNT=263 (expected=248), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3422, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 3440 (full step 215): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3438, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 3456 (full step 216): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3454, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 3472 (full step 217): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3470, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 3488 (full step 218): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3486, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 3504 (full step 219): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3502, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=775
+Position check at step 3520 (full step 220): MSCNT=775 (expected=760), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3518, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 3536 (full step 221): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3534, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 3552 (full step 222): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3550, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 3568 (full step 223): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3566, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3584 (full step 224): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3582, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 3600 (full step 225): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3598, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 3616 (full step 226): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3614, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 3632 (full step 227): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3630, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3648 (full step 228): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3646, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 3664 (full step 229): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3662, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 3680 (full step 230): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3678, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 3696 (full step 231): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3694, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=775
+Position check at step 3712 (full step 232): MSCNT=775 (expected=760), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3710, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 3728 (full step 233): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3726, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 3744 (full step 234): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3742, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=519
+Position check at step 3760 (full step 235): MSCNT=519 (expected=504), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3758, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3776 (full step 236): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3774, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 3792 (full step 237): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3790, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 3808 (full step 238): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3806, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=519
+Position check at step 3824 (full step 239): MSCNT=519 (expected=504), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3822, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 3840 (full step 240): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3838, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=7
+Position check at step 3856 (full step 241): MSCNT=7 (expected=1016), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3854, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=260
+Position check at step 3872 (full step 242): MSCNT=260 (expected=248), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3870, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 3888 (full step 243): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3886, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 3904 (full step 244): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3902, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 3920 (full step 245): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3918, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 3936 (full step 246): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3934, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 3952 (full step 247): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3950, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 3968 (full step 248): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3966, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 3984 (full step 249): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3982, expected_mscnt_absolute=1016, initial_mscnt=792
+Step 4000/39600 (10.1%): 1600.00 Hz, 625 μs, Phase: Constant Speed
+  Position: Step=4000, MSCNT=4, Error=12, Age=8 ms ✓
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4000 (full step 250): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=3998, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 4016 (full step 251): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4014, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 4032 (full step 252): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4030, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 4048 (full step 253): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4046, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=259
+Position check at step 4064 (full step 254): MSCNT=259 (expected=248), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4062, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=516
+Position check at step 4080 (full step 255): MSCNT=516 (expected=504), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4078, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 4096 (full step 256): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4094, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=6
+Position check at step 4112 (full step 257): MSCNT=6 (expected=1016), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4110, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4128 (full step 258): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4126, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 4144 (full step 259): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4142, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=771
+Position check at step 4160 (full step 260): MSCNT=771 (expected=760), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4158, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=7
+Position check at step 4176 (full step 261): MSCNT=7 (expected=1016), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4174, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 4192 (full step 262): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4190, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 4208 (full step 263): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4206, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 4224 (full step 264): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4222, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 4240 (full step 265): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4238, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4256 (full step 266): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4254, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 4272 (full step 267): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4270, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 4288 (full step 268): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4286, expected_mscnt_absolute=760, initial_mscnt=792
+Progress: 10.9% (4301/39600 steps) - Constant Speed
+  Current speed: 1600.00 Hz, Timer: 625 μs, Phase: Constant Speed
+  Position: Step=4301, MSCNT=773, Error=13, Age=6 ms ✓
+  Error Stats: Total=0, Checks=268, Avg=0.00 steps
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 4304 (full step 269): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4302, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 4320 (full step 270): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4318, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 4336 (full step 271): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4334, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 4352 (full step 272): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4350, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 4368 (full step 273): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4366, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=260
+Position check at step 4384 (full step 274): MSCNT=260 (expected=248), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4382, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 4400 (full step 275): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4398, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 4416 (full step 276): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4414, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 4432 (full step 277): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4430, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=259
+Position check at step 4448 (full step 278): MSCNT=259 (expected=248), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4446, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=516
+Position check at step 4464 (full step 279): MSCNT=516 (expected=504), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4462, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 4480 (full step 280): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4478, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 4496 (full step 281): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4494, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4512 (full step 282): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4510, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 4528 (full step 283): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4526, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 4544 (full step 284): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4542, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=268, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=4
+Position check at step 4560 (full step 285): MSCNT=4 (expected=1016), error=12, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4558, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4576 (full step 286): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4574, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 4592 (full step 287): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4590, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=773
+Position check at step 4608 (full step 288): MSCNT=773 (expected=760), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4606, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 4624 (full step 289): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4622, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 4640 (full step 290): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4638, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 4656 (full step 291): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4654, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 4672 (full step 292): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4670, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=5
+Position check at step 4688 (full step 293): MSCNT=5 (expected=1016), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4686, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4704 (full step 294): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4702, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=518
+Position check at step 4720 (full step 295): MSCNT=518 (expected=504), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4718, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=774
+Position check at step 4736 (full step 296): MSCNT=774 (expected=760), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4734, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 4752 (full step 297): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4750, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=261
+Position check at step 4768 (full step 298): MSCNT=261 (expected=248), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4766, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=269, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=517
+Position check at step 4784 (full step 299): MSCNT=517 (expected=504), error=13, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4782, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=771
+Position check at step 4800 (full step 300): MSCNT=771 (expected=760), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4798, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=3
+Position check at step 4816 (full step 301): MSCNT=3 (expected=1016), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4814, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=270, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=262
+Position check at step 4832 (full step 302): MSCNT=262 (expected=248), error=14, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4830, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=267, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=515
+Position check at step 4848 (full step 303): MSCNT=515 (expected=504), error=11, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4846, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=271, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=775
+Position check at step 4864 (full step 304): MSCNT=775 (expected=760), error=15, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=4862, expected_mscnt_absolute=760, initial_mscnt=792
+.
+.
+.
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=507
+Position check at step 38832 (full step 2427): MSCNT=507 (expected=504), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38830, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=763
+Position check at step 38848 (full step 2428): MSCNT=763 (expected=760), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38846, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1019
+Position check at step 38864 (full step 2429): MSCNT=1019 (expected=1016), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38862, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 38880 (full step 2430): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38878, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=507
+Position check at step 38896 (full step 2431): MSCNT=507 (expected=504), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38894, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=763
+Position check at step 38912 (full step 2432): MSCNT=763 (expected=760), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38910, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1019
+Position check at step 38928 (full step 2433): MSCNT=1019 (expected=1016), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38926, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 38944 (full step 2434): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38942, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 38960 (full step 2435): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38958, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=763
+Position check at step 38976 (full step 2436): MSCNT=763 (expected=760), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38974, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1019
+Position check at step 38992 (full step 2437): MSCNT=1019 (expected=1016), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=38990, expected_mscnt_absolute=1016, initial_mscnt=792
+Step 39000/39600 (98.5%): 276.00 Hz, 3623 μs, Phase: Decel Constant
+  Position: Step=39000, MSCNT=1019, Error=3, Age=26 ms ✓
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=251
+Position check at step 39008 (full step 2438): MSCNT=251 (expected=248), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39006, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=507
+Position check at step 39024 (full step 2439): MSCNT=507 (expected=504), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39022, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 39040 (full step 2440): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39038, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1019
+Position check at step 39056 (full step 2441): MSCNT=1019 (expected=1016), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39054, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 39072 (full step 2442): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39070, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=259, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=507
+Position check at step 39088 (full step 2443): MSCNT=507 (expected=504), error=3, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39086, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 39104 (full step 2444): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39102, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 39120 (full step 2445): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39118, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 39136 (full step 2446): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39134, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 39152 (full step 2447): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39150, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 39168 (full step 2448): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39166, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 39184 (full step 2449): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39182, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 39200 (full step 2450): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39198, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 39216 (full step 2451): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39214, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 39232 (full step 2452): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39230, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1018
+Position check at step 39248 (full step 2453): MSCNT=1018 (expected=1016), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39246, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=250
+Position check at step 39264 (full step 2454): MSCNT=250 (expected=248), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39262, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=506
+Position check at step 39280 (full step 2455): MSCNT=506 (expected=504), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39278, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=258, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=762
+Position check at step 39296 (full step 2456): MSCNT=762 (expected=760), error=2, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39294, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 39312 (full step 2457): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39310, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 39328 (full step 2458): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39326, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 39344 (full step 2459): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39342, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 39360 (full step 2460): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39358, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 39376 (full step 2461): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39374, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 39392 (full step 2462): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39390, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 39408 (full step 2463): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39406, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 39424 (full step 2464): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39422, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 39440 (full step 2465): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39438, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 39456 (full step 2466): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39454, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 39472 (full step 2467): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39470, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 39488 (full step 2468): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39486, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 39504 (full step 2469): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39502, expected_mscnt_absolute=1016, initial_mscnt=792
+Progress: 99.8% (39507/39600 steps) - Decel Jerk Decrease
+  Current speed: 46.84 Hz, Timer: 21351 μs, Phase: Decel Jerk Decrease
+  Position: Step=39507, MSCNT=1017, Error=1, Age=71 ms ✓
+  Error Stats: Total=0, Checks=2469, Avg=0.00 steps
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 39520 (full step 2470): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39518, expected_mscnt_absolute=248, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 39536 (full step 2471): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39534, expected_mscnt_absolute=504, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=504, actual_mscnt=761
+Position check at step 39552 (full step 2472): MSCNT=761 (expected=760), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39550, expected_mscnt_absolute=760, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=760, actual_mscnt=1017
+Position check at step 39568 (full step 2473): MSCNT=1017 (expected=1016), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39566, expected_mscnt_absolute=1016, initial_mscnt=792
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=1016, actual_mscnt=249
+Position check at step 39584 (full step 2474): MSCNT=249 (expected=248), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39582, expected_mscnt_absolute=248, initial_mscnt=792
+S-curve motion complete: 39600 steps executed
+DEBUG: step_diff=16, mscnt_diff=257, mscnt_increment=256, mscnt_step_diff=1, step_error=0
+DEBUG: last_expected_mscnt=248, actual_mscnt=505
+Position check at step 39600 (full step 2475): MSCNT=505 (expected=504), error=1, step_error=0, total_error=0, avg_error=0.00 ✓
+DEBUG: relative_step_count=39598, expected_mscnt_absolute=504, initial_mscnt=792
+
+SUCCESS: S-curve motion completed!
+
+=== Final Status ===
+- Status: Complete
+- Progress: 100.0%
+- Steps completed: 39600
+- Total steps: 39600
+
+=== Final Position Status ===
+- Final step count: 39600
+- Final MSCNT value: 505
+- Position error: 1 microsteps
+- Last update age: 33 ms
+- Position valid: Yes ✓
+
+=== Error Accumulation Analysis ===
+- Total accumulated error: 0 steps
+- Number of position checks: 2475
+- Average error per check: 0.00 steps
+- Error rate: 0.000 steps per full step
+- Error percentage: 0.00%
+- Result: Perfect synchronization ✓
+
+=== Timing Information ===
+- Total motion time: 37.640 seconds
+- Average step frequency: 1052.06 Hz
+- Average speed: 0.20 RPM
+Position monitoring thread stopped
+Position monitoring stopped
+S-curve motion stopped
+Position monitoring stopped
+Position monitor deinitialized
+S-curve motion control deinitialized
+TMC2209 GPIO deinitialized
+
+S-curve motion test completed successfully!
+# 

@@ -7,7 +7,7 @@ CFLAGS = -Wall -Wextra -std=gnu99 -O2
 LDFLAGS = -lgpiod -lm
 
 # Source files for the library
-LIB_SOURCES = tmc_uart_rpi.c tmc2209.c common.c tmc_gpio.c tmc_motion.c
+LIB_SOURCES = tmc_uart_rpi.c tmc2209.c common.c tmc_gpio.c tmc_motion.c log.c
 LIB_OBJECTS = $(LIB_SOURCES:.c=.o)
 
 # Test executables

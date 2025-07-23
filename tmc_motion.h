@@ -64,7 +64,7 @@ typedef struct {
     // Error accumulation tracking
     uint32_t last_expected_step_count;  // Expected step count at last poll
     uint16_t last_expected_mscnt;       // Expected MSCNT at last poll
-    int32_t total_step_error;           // Cumulative step error
+    float total_step_error;           // Cumulative step error
     uint32_t error_check_count;         // Number of error checks performed
     float average_step_error;           // Average error per check
     
@@ -89,7 +89,7 @@ typedef struct {
    float jerk_rate_hz_per_sec2;
    float start_speed_hz;
    float start_accel_hz_per_sec;
-   uint32_t gear_ratio;
+   float gear_ratio;
    bool direction;
    uint16_t microstep_resolution;
    
@@ -169,7 +169,7 @@ bool tmc_position_monitor_get_error_stats(tmc_position_monitor_t *monitor, int32
                               float jerk_rate_hz_per_sec2,
                               float start_speed_hz,
                               float start_accel_hz_per_sec,
-                              uint32_t gear_ratio,
+                              float gear_ratio,
                               bool direction,
                               uint16_t microstep_resolution);
  bool tmc_motion_s_curve_stop(tmc_motion_s_curve_t *motion);

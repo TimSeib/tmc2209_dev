@@ -12,9 +12,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <math.h>
 #include "tmc2209.h"
 #include "tmc_gpio.h"
 #include "tmc_motion.h"
+#include "log.h"
 
 // Helper function to get current time (copied from motion.c)
 static uint64_t get_time_us(void) {
@@ -28,50 +30,68 @@ int main() {
     tmc_gpio_context_t gpio_ctx;
     tmc_gpio_config_t gpio_config;
     tmc_motion_s_curve_t motion;
+    int log_level;
 
-    printf("TMC2209 S-Curve Motion Test\n");
-    printf("===========================\n\n");
+    /*
+    log_trace(const char *fmt, ...);
+    log_debug(const char *fmt, ...);
+    log_info(const char *fmt, ...);
+    log_warn(const char *fmt, ...);
+    log_error(const char *fmt, ...);
+    log_fatal(const char *fmt, ...);
+    */
+    
+    printf("Enter log level (0, Trace, 1, Debug, 2, Info, 3, Warn, 4, Error, 5, Fatal): ");
+    if (scanf("%d", &log_level) != 1) {
+        printf("ERROR: Invalid log level\n");
+        return -1;
+    }
+    log_set_level(log_level);
+    
+    log_info("TMC2209 S-Curve Motion Test");
+    log_info("===========================");
     
     // Initialize GPIO
-    printf("Initializing GPIO...\n");
+
+    log_info("Initializing GPIO...");
     gpio_config = tmc_gpio_get_default_config();
     if (!tmc_gpio_init(&gpio_ctx, &gpio_config, "gpiochip0")) {
-        printf("ERROR: Failed to initialize GPIO\n");
+        log_error("Failed to initialize GPIO");
         return -1;
     }
-    printf("GPIO initialized successfully\n");
+    log_info("GPIO initialized successfully");
     
     // Initialize TMC2209 with defaults
-    printf("Initializing TMC2209...\n");
+    log_info("Initializing TMC2209...");
     TMC2209_SetDefaults(&driver);
-    driver.config.current = 500;      // 500mA
-    driver.config.microsteps = 16;     // change microsteps here
+    driver.config.current = 600;      // 500mA
+    driver.config.microsteps = 8;     // change microsteps here
     
     if (!TMC2209_Init(&driver)) {
-        printf("ERROR: Failed to initialize TMC2209\n");
+        log_error("Failed to initialize TMC2209");
         return -1;
     }
-    printf("TMC2209 initialized successfully\n");
+    log_info("TMC2209 initialized successfully");
     
     // Set motor current
-    printf("Setting motor current to 500mA...\n");
+    log_info("Setting motor current to 600mA...");
     TMC2209_SetCurrent(&driver, 600, 50);
     
     // Verify current was set
     uint16_t actual_current = TMC2209_GetCurrent(&driver, TMCCurrent_Actual);
-    printf("Motor current: %d mA\n\n", actual_current);
+    log_info("Motor current: %d mA", actual_current);
     
          // Initialize S-curve motion control
-     printf("Initializing S-curve motion control...\n");
+     log_info("Initializing S-curve motion control...");
      if (!tmc_motion_s_curve_init(&motion, &gpio_ctx, &driver)) {
-         printf("ERROR: Failed to initialize S-curve motion control\n");
+         log_error("Failed to initialize S-curve motion control");
          return -1;
      }
     
     // Get user input for S-curve parameters
     float target_angle_degrees, max_speed_rpm, max_accel_hz_per_sec, jerk_rate_hz_per_sec2;
     float start_speed_hz, start_accel_hz_per_sec;
-    uint32_t gear_ratio;
+    float gear_ratio;
     bool direction;
     char dir_input;
     
@@ -79,63 +99,63 @@ int main() {
     
     printf("Enter target angle (degrees, output shaft): ");
     if (scanf("%f", &target_angle_degrees) != 1) {
-        printf("ERROR: Invalid target angle\n");
+        log_error("Invalid target angle");
         return -1;
     }
     
     printf("Enter maximum speed (RPM, input shaft): ");
     if (scanf("%f", &max_speed_rpm) != 1) {
-        printf("ERROR: Invalid maximum speed\n");
+        log_error("Invalid maximum speed");
         return -1;
     }
     
     printf("Enter maximum acceleration (Hz/sec, input shaft): ");
     if (scanf("%f", &max_accel_hz_per_sec) != 1) {
-        printf("ERROR: Invalid maximum acceleration\n");
+        log_error("Invalid maximum acceleration");
         return -1;
     }
     
     printf("Enter jerk rate (Hz/sec², input shaft): ");
     if (scanf("%f", &jerk_rate_hz_per_sec2) != 1) {
-        printf("ERROR: Invalid jerk rate\n");
+        log_error("Invalid jerk rate");
         return -1;
     }
     
     printf("Enter starting speed (Hz, input shaft): ");
     if (scanf("%f", &start_speed_hz) != 1) {
-        printf("ERROR: Invalid starting speed\n");
+        log_error("Invalid starting speed");
         return -1;
     }
     
     printf("Enter starting acceleration (Hz/sec, input shaft): ");
     if (scanf("%f", &start_accel_hz_per_sec) != 1) {
-        printf("ERROR: Invalid starting acceleration\n");
+        log_error("Invalid starting acceleration");
         return -1;
     }
     
     printf("Enter gear ratio (e.g., 100 for 100:1 reduction): ");
-    if (scanf("%u", &gear_ratio) != 1) {
-        printf("ERROR: Invalid gear ratio\n");
+    if (scanf("%f", &gear_ratio) != 1) {
+        log_error("Invalid gear ratio");
         return -1;
     }
     
     printf("Enter direction (c = clockwise, w = counter-clockwise): ");
     if (scanf(" %c", &dir_input) != 1) {
-        printf("ERROR: Invalid direction\n");
+        log_error("Invalid direction");
         return -1;
     }
-    direction = (dir_input == 'c' || dir_input == 'C');
+    direction = (dir_input == 'w' || dir_input == 'W');
     
-    printf("\n=== Motion Parameters Summary ===\n");
-    printf("- Target angle: %.2f degrees (output shaft)\n", target_angle_degrees);
-    printf("- Maximum speed: %.2f RPM (input shaft)\n", max_speed_rpm);
-    printf("- Maximum acceleration: %.2f Hz/sec (input shaft)\n", max_accel_hz_per_sec);
-    printf("- Jerk rate: %.3f Hz/sec² (input shaft)\n", jerk_rate_hz_per_sec2);
-    printf("- Starting speed: %.2f Hz (input shaft)\n", start_speed_hz);
-    printf("- Starting acceleration: %.2f Hz/sec (input shaft)\n", start_accel_hz_per_sec);
-    printf("- Gear ratio: %u:1\n", gear_ratio);
-    printf("- Direction: %s\n", direction ? "Clockwise" : "Counter-clockwise");
-    printf("- Microstep resolution: 1/%d\n", driver.config.microsteps);
+    log_info("=== Motion Parameters Summary ===");
+    log_info("- Target angle: %.2f degrees (output shaft)", target_angle_degrees);
+    log_info("- Maximum speed: %.2f RPM (input shaft)", max_speed_rpm);
+    log_info("- Maximum acceleration: %.2f Hz/sec (input shaft)", max_accel_hz_per_sec);
+    log_info("- Jerk rate: %.3f Hz/sec² (input shaft)", jerk_rate_hz_per_sec2);
+    log_info("- Starting speed: %.2f Hz (input shaft)", start_speed_hz);
+    log_info("- Starting acceleration: %.2f Hz/sec (input shaft)", start_accel_hz_per_sec);
+    log_info("- Gear ratio: %f:1", gear_ratio);
+    log_info("- Direction: %s", direction ? "Clockwise" : "Counter-clockwise");
+    log_info("- Microstep resolution: 1/%d", driver.config.microsteps);
     
     // Calculate expected parameters for display
     uint32_t steps_per_rev = 200 * driver.config.microsteps;
@@ -145,16 +165,16 @@ int main() {
     float max_speed_hz = (max_speed_rpm * steps_per_rev) / 60.0f;
     float output_speed_rpm = max_speed_rpm / gear_ratio;
     
-    printf("\n=== Calculated Parameters ===\n");
-    printf("- Steps per revolution: %u\n", steps_per_rev);
-    printf("- Total steps: %u\n", total_steps);
-    printf("- Output shaft speed: %.2f RPM\n", output_speed_rpm);
-    printf("- Maximum step frequency: %.2f Hz\n", max_speed_hz);
-    printf("- Minimum timer period: %u μs\n", speed_to_timer_period(max_speed_hz));
-    printf("- Position monitoring: Every %u microsteps (every full step)\n", driver.config.microsteps);
+    log_info("=== Calculated Parameters ===");
+    log_info("- Steps per revolution: %u", steps_per_rev);
+    log_info("- Total steps: %u", total_steps);
+    log_info("- Output shaft speed: %.2f RPM", output_speed_rpm);
+    log_info("- Maximum step frequency: %.2f Hz", max_speed_hz);
+    log_info("- Minimum timer period: %u μs", speed_to_timer_period(max_speed_hz));
+    log_info("- Position monitoring: Every %u microsteps (every full step)", driver.config.microsteps);
     
     // Start S-curve motion
-    printf("\nStarting S-curve motion...\n");
+    log_info("Starting S-curve motion...");
     if (!tmc_motion_s_curve_start(&motion, 
                                  target_angle_degrees,
                                  max_speed_rpm,
@@ -165,7 +185,7 @@ int main() {
                                  gear_ratio,
                                  direction,
                                  driver.config.microsteps)) {
-        printf("ERROR: Failed to start S-curve motion\n");
+        log_error("Failed to start S-curve motion");
         return -1;
     }
     
@@ -189,11 +209,11 @@ int main() {
         if (steps_completed - last_reported_step >= 1000 || 
             (current_time - start_time) >= 5000000) { // 5 seconds
             
-            printf("Progress: %.1f%% (%u/%u steps) - %s\n", 
+            log_info("Progress: %.1f%% (%u/%u steps) - %s", 
                    progress, steps_completed, motion.total_steps, status);
             
             if (motion.motion_active) {
-                printf("  Current speed: %.2f Hz, Timer: %u μs, Phase: %s\n",
+                log_info("  Current speed: %.2f Hz, Timer: %u μs, Phase: %s",
                        motion.current_speed_hz, motion.current_timer_period_us, status);
             }
             
@@ -205,25 +225,23 @@ int main() {
                 uint64_t last_update_time;
                 
                 if (tmc_position_monitor_get_status(&motion.position_monitor, 
-                                                   &monitor_step_count, &monitor_mscnt, 
-                                                   &monitor_error, &last_update_time)) {
+                                                           &monitor_step_count, &monitor_mscnt, 
+                                                           &monitor_error, &last_update_time)) {
                     uint64_t current_time = get_time_us();
                     uint64_t age_ms = (current_time - last_update_time) / 1000;
-                    printf("  Position: Step=%u, MSCNT=%u, Error=%d, Age=%lu ms %s\n", 
-                           monitor_step_count, monitor_mscnt, monitor_error, age_ms,
-                           motion.position_monitor.position_valid ? "✓" : "✗");
-                    
-                    // Show error accumulation statistics
-                    int32_t total_error;
-                    uint32_t check_count;
-                    float average_error;
-                    if (tmc_position_monitor_get_error_stats(&motion.position_monitor, 
-                                                            &total_error, &check_count, &average_error)) {
-                        printf("  Error Stats: Total=%d, Checks=%u, Avg=%.2f steps\n", 
-                               total_error, check_count, average_error);
-                    }
+                    log_info("  Position: Step=%u, MSCNT=%u, Error=%d MSCNT units, Age=%lu ms", 
+                                   monitor_step_count, monitor_mscnt, monitor_error, age_ms);
+                            
+                            // Show position accuracy
+                            int32_t total_error;
+                            uint32_t check_count;
+                            float average_error;
+                            if (tmc_position_monitor_get_error_stats(&motion.position_monitor, 
+                                                                    &total_error, &check_count, &average_error)) {
+                                log_info("  Position accuracy: %.3f microsteps average offset", average_error);
+                            }
                 } else {
-                    printf("  Position: No data available yet\n");
+                    log_info("  Position: No data available yet");
                 }
             }
             
@@ -233,14 +251,14 @@ int main() {
     }
     
     // Motion complete
-    printf("\nSUCCESS: S-curve motion completed!\n");
+    log_info("SUCCESS: S-curve motion completed!");
     
     // Print final status
-    printf("\n=== Final Status ===\n");
-    printf("- Status: %s\n", tmc_motion_s_curve_get_status(&motion));
-    printf("- Progress: %.1f%%\n", tmc_motion_s_curve_get_progress(&motion) * 100.0f);
-    printf("- Steps completed: %u\n", motion.steps_completed);
-    printf("- Total steps: %u\n", motion.total_steps);
+    log_info("=== Final Status ===");
+    log_info("- Status: %s", tmc_motion_s_curve_get_status(&motion));
+    log_info("- Progress: %.1f%%", tmc_motion_s_curve_get_progress(&motion) * 100.0f);
+    log_info("- Steps completed: %u", motion.steps_completed);
+    log_info("- Total steps: %u", motion.total_steps);
     
     // Show final position status
     if (motion.position_monitor.driver) {
@@ -249,47 +267,35 @@ int main() {
         int16_t monitor_error;
         uint64_t last_update_time;
         
-        printf("\n=== Final Position Status ===\n");
+        log_info("=== Final Position Status ===");
         if (tmc_position_monitor_get_status(&motion.position_monitor, 
                                            &monitor_step_count, &monitor_mscnt, 
                                            &monitor_error, &last_update_time)) {
             uint64_t current_time = get_time_us();
             uint64_t age_ms = (current_time - last_update_time) / 1000;
-            printf("- Final step count: %u\n", monitor_step_count);
-            printf("- Final MSCNT value: %u\n", monitor_mscnt);
-            printf("- Position error: %d microsteps\n", monitor_error);
-            printf("- Last update age: %lu ms\n", age_ms);
-            printf("- Position valid: %s\n", motion.position_monitor.position_valid ? "Yes ✓" : "No ✗");
+            log_info("- Final step count: %u", monitor_step_count);
+            log_info("- Final MSCNT value: %u", monitor_mscnt);
+            log_info("- Final position error: %d MSCNT units (%.3f microsteps)", 
+                   monitor_error, (float)monitor_error * (float)motion.position_monitor.microstep_resolution / 256.0f);
+            log_info("- Last update age: %lu ms", age_ms);
+            log_info("- Position valid: %s", motion.position_monitor.position_valid ? "Yes" : "No");
             
-            // Show final error accumulation statistics
+            // Show position accuracy summary
             int32_t total_error;
             uint32_t check_count;
             float average_error;
             if (tmc_position_monitor_get_error_stats(&motion.position_monitor, 
                                                     &total_error, &check_count, &average_error)) {
-                printf("\n=== Error Accumulation Analysis ===\n");
-                printf("- Total accumulated error: %d steps\n", total_error);
-                printf("- Number of position checks: %u\n", check_count);
-                printf("- Average error per check: %.2f steps\n", average_error);
-                printf("- Error rate: %.3f steps per full step\n", average_error);
-                
-                if (check_count > 0) {
-                    float error_percentage = (float)abs(total_error) / check_count * 100.0f;
-                    printf("- Error percentage: %.2f%%\n", error_percentage);
-                    
-                    if (total_error == 0) {
-                        printf("- Result: Perfect synchronization ✓\n");
-                    } else if (abs(total_error) <= check_count / 10) {
-                        printf("- Result: Good synchronization ✓\n");
-                    } else if (abs(total_error) <= check_count / 2) {
-                        printf("- Result: Moderate drift ⚠\n");
-                    } else {
-                        printf("- Result: Significant drift ✗\n");
-                    }
-                }
+                log_info("=== Position Accuracy Summary ===");
+                log_info("- Number of position checks: %u", check_count);
+                log_info("- Average position offset: %.3f microsteps", average_error);
+                log_info("- Position consistency: %s", 
+                       (fabs(average_error) < 0.1f) ? "Excellent" : 
+                       (fabs(average_error) < 0.5f) ? "Good" : 
+                       (fabs(average_error) < 1.0f) ? "Acceptable" : "Poor");
             }
         } else {
-            printf("- Position data: Not available\n");
+            log_info("- Position data: Not available");
         }
     }
     
@@ -298,10 +304,10 @@ int main() {
     float total_time_seconds = (float)(end_time - motion.start_time_us) / 1000000.0f;
     float average_speed_hz = (float)motion.steps_completed / total_time_seconds;
     
-    printf("\n=== Timing Information ===\n");
-    printf("- Total motion time: %.3f seconds\n", total_time_seconds);
-    printf("- Average step frequency: %.2f Hz\n", average_speed_hz);
-    printf("- Average speed: %.2f RPM\n", (average_speed_hz * 60.0f) / (steps_per_rev * gear_ratio));
+    log_info("=== Timing Information ===");
+    log_info("- Total motion time: %.3f seconds", total_time_seconds);
+    log_info("- Average step frequency: %.2f Hz", average_speed_hz);
+    log_info("- Average speed: %.2f RPM", (average_speed_hz * 60.0f) / (steps_per_rev * gear_ratio));
     
     // Cleanup
     tmc_motion_s_curve_deinit(&motion);
