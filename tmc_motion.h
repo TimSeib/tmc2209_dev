@@ -71,6 +71,9 @@ typedef struct {
     // Initial position offset for relative error calculation
     uint16_t initial_mscnt;             // Initial MSCNT value at start
     uint32_t initial_step_count;        // Initial step count at start
+    
+    // Motion direction for MSCNT calculation
+    bool direction;                     // true = clockwise, false = counter-clockwise
 } tmc_position_monitor_t;
 
 // ============================================================================
@@ -147,7 +150,7 @@ typedef struct {
  // ============================================================================
 
 // Position monitoring function declarations
-bool tmc_position_monitor_init(tmc_position_monitor_t *monitor, TMC2209_t *driver, uint16_t microstep_resolution);
+bool tmc_position_monitor_init(tmc_position_monitor_t *monitor, TMC2209_t *driver, uint16_t microstep_resolution, bool direction);
 void tmc_position_monitor_deinit(tmc_position_monitor_t *monitor);
 bool tmc_position_monitor_start(tmc_position_monitor_t *monitor);
 void tmc_position_monitor_stop(tmc_position_monitor_t *monitor);
@@ -185,7 +188,7 @@ bool tmc_position_monitor_get_error_stats(tmc_position_monitor_t *monitor, int32
  uint32_t speed_to_timer_period(float speed_hz);
  
  // MSCNT position tracking functions
- uint16_t calculate_expected_mscnt(uint32_t step_count, uint16_t microstep_resolution);
+ uint16_t calculate_expected_mscnt(uint32_t step_count, uint16_t microstep_resolution, bool direction);
  bool check_mscnt_position(TMC2209_t *driver, uint32_t step_count, uint16_t microstep_resolution);
  
  #endif // _TMC_MOTION_SIMPLE_H_

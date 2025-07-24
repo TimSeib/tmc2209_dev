@@ -44,7 +44,7 @@ typedef struct {
     float jerk_rate_hz_per_sec2;    // Jerk rate in Hz/sec² (input shaft)
     float start_speed_hz;           // Starting speed in Hz (input shaft)
     float start_accel_hz_per_sec;   // Starting acceleration in Hz/sec (input shaft)
-    uint32_t gear_ratio;            // Gear reduction ratio
+    float gear_ratio;            // Gear reduction ratio
     uint16_t microstep_resolution;  // Microstep resolution (1, 2, 4, 8, 16, 32, 64, 128, 256)
     
     // Calculated parameters (converted to Hz-based units)
@@ -412,7 +412,7 @@ void get_user_input(s_curve_profile_t *profile) {
     scanf("%f", &profile->start_accel_hz_per_sec);
     
     printf("Enter gear ratio (e.g., 100 for 100:1 reduction): ");
-    scanf("%u", &profile->gear_ratio);
+    scanf("%f", &profile->gear_ratio);
     
     printf("Enter microstep resolution (1, 2, 4, 8, 16, 32, 64, 128, 256): ");
     scanf("%hu", &profile->microstep_resolution);
@@ -440,7 +440,7 @@ void display_profile_results(s_curve_profile_t *profile) {
     printf("- Jerk rate: %.2f Hz/sec² (input shaft)\n", profile->jerk_rate_hz_per_sec2);
     printf("- Starting speed: %.2f Hz (input shaft)\n", profile->start_speed_hz);
     printf("- Starting acceleration: %.2f Hz/sec (input shaft)\n", profile->start_accel_hz_per_sec);
-    printf("- Gear ratio: %u:1\n", profile->gear_ratio);
+    printf("- Gear ratio: %f:1\n", profile->gear_ratio);
     printf("- Microstep resolution: 1/%u\n", profile->microstep_resolution);
     
     printf("\nCalculated Parameters:\n");
