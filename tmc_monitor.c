@@ -7,7 +7,7 @@
  * v1.0.0 / 2024-12-19
  */
 
-#include "tmc_motion.h"
+#include "tmc_monitor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +17,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <pthread.h>
+#include <time.h>
 #include "log.h"
 
 // Global variable to track total MSCNT delta for entire movement
