@@ -11,7 +11,7 @@ LIB_SOURCES = tmc_uart_rpi.c tmc2209.c common.c tmc_gpio.c tmc_motion.c log.c
 LIB_OBJECTS = $(LIB_SOURCES:.c=.o)
 
 # Test executables
-TEST_TARGETS = tests/tmc2209_test tests/test_s_curve_calculations tests/test_s_curve_motion tests/test_uart_timing tests/test_uart_timing_detailed
+TEST_TARGETS = tests/tmc2209_test tests/test_s_curve_calculations tests/test_s_curve_motion tests/test_uart_timing tests/test_uart_timing_detailed tests/msync_benchmark tests/read_stepcount
 
 # tests/test_motor_movement
 
@@ -44,6 +44,14 @@ tests/test_uart_timing: test_uart_timing.c $(LIB_OBJECTS)
 tests/test_uart_timing_detailed: test_uart_timing_detailed.c $(LIB_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
 
+# Test 7: msync benchmark test
+tests/msync_benchmark: msync_benchmark.c
+	$(CC) $(CFLAGS) -o $@ $< -lrt
+
+# Test 8: read stepcount utility
+tests/read_stepcount: read_stepcount.c
+	$(CC) $(CFLAGS) -o $@ $< -lrt
+
 
 
 # Individual test targets
@@ -58,6 +66,10 @@ test_s_curve_motion: tests/test_s_curve_motion
 test_uart_timing: tests/test_uart_timing
 
 test_uart_timing_detailed: tests/test_uart_timing_detailed
+
+test_msync_benchmark: tests/msync_benchmark
+
+test_read_stepcount: tests/read_stepcount
 
 
 

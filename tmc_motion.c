@@ -298,7 +298,7 @@
      // Start position monitoring AFTER motion thread has started and synchronized
      if (motion->position_monitor.driver) {
          // Wait a moment for motion thread to initialize and synchronize
-         usleep(100); // 10ms
+         usleep(100); // 100us
          
          // Update position monitor with current synchronized step count
          tmc_position_monitor_update_step_count(&motion->position_monitor, motion->steps_completed);
@@ -330,18 +330,15 @@
          pthread_join(motion->motion_thread, NULL);
          motion->thread_running = false;
      }
-     
-  
      // Disable motor
      if (motion->gpio_ctx) {
-         tmc_gpio_enable_driver(motion->gpio_ctx, false);
-     }
-
+        tmc_gpio_enable_driver(motion->gpio_ctx, false);
+    }     
+    
      // Stop position monitoring thread
      if (motion->position_monitor.driver) {
          tmc_position_monitor_stop(&motion->position_monitor);
-     }
-     
+     }    
      
      log_info("S-curve motion stopped");
      return true;
@@ -727,7 +724,7 @@ static void* position_monitor_thread_function(void *arg) {
     // Only initialize if this is a brand new file
     if (file_was_empty) {
         *step_ptr = 0;
-        msync((void*)step_ptr, sizeof(int32_t), MS_SYNC);
+        msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
         log_info("Initialized new step counter to 0");
     } else {
         log_info("Restored step counter to %d", *step_ptr);
@@ -769,7 +766,6 @@ static void* position_monitor_thread_function(void *arg) {
                 should_poll = true;
                 last_step_count = current_step_count;
                 last_poll_time = current_time;
-                first_poll = false;
             }
                 }
         
@@ -785,7 +781,40 @@ static void* position_monitor_thread_function(void *arg) {
                     current_step_count_at_mscnt_read = monitor->last_step_count;
                     pthread_mutex_unlock(&monitor->data_mutex);
                 }
+
+                // on first poll do not increment g_total_mscnt_delta wait until first full step
+                if(first_poll){
+                    log_trace("initial_mscnt=%d", monitor->initial_mscnt);
+                    log_trace("actual_mscnt=%d", actual_mscnt);
+                    int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->initial_mscnt;
+                    // Handle MSCNT wrap-around properly
+                    if (mscnt_diff_actual > 512) {
+                        mscnt_diff_actual -= 1024;
+                    } else if (mscnt_diff_actual < -512) {
+                        mscnt_diff_actual += 1024;
+                    }
+                    g_total_mscnt_delta += mscnt_diff_actual;
+                    log_trace("g_total_mscnt_delta=%d", g_total_mscnt_delta);
+                    *step_ptr += mscnt_diff_actual;
                 
+                    // Sync to disk every step
+                    msync((void*)step_ptr, sizeof(int32_t), MS_SYNC);
+                    first_poll = false;
+                }else{
+                    int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->last_mscnt;
+                    // Handle MSCNT wrap-around properly
+                    if (mscnt_diff_actual > 512) {
+                        mscnt_diff_actual -= 1024;
+                    } else if (mscnt_diff_actual < -512) {
+                        mscnt_diff_actual += 1024;
+                    }
+                    g_total_mscnt_delta += mscnt_diff_actual;
+                    log_trace("g_total_mscnt_delta=%d", g_total_mscnt_delta);
+                    *step_ptr += mscnt_diff_actual;
+                
+                    // Sync to disk every step
+                    msync((void*)step_ptr, sizeof(int32_t), MS_SYNC);
+                }
                 // Use the step count that was current when MSCNT was read
                 uint16_t expected_mscnt_absolute = 0;
                 
@@ -830,19 +859,6 @@ static void* position_monitor_thread_function(void *arg) {
                     } else if (mscnt_diff < -512) {
                         mscnt_diff += 1024;
                     }
-
-                    int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->last_mscnt;
-                     // Handle MSCNT wrap-around properly
-                     if (mscnt_diff_actual > 512) {
-                        mscnt_diff_actual -= 1024;
-                    } else if (mscnt_diff_actual < -512) {
-                        mscnt_diff_actual += 1024;
-                    }
-                    g_total_mscnt_delta += mscnt_diff_actual;
-                    *step_ptr += mscnt_diff_actual;
-            
-                     // Sync to disk every step
-                    msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
 
                     // Convert MSCNT difference to step difference
                     // MSCNT increments by 256 per full step
@@ -946,10 +962,7 @@ static void* position_monitor_thread_function(void *arg) {
                 log_warn("Failed to read MSCNT register at step %u", current_step_count);
             }
         }
-        
-        // Sleep for a short time to avoid busy waiting
-        // This prevents the thread from consuming too much CPU while still being responsive
-        usleep(10); // 500μs sleep - increased to reduce UART conflicts
+        usleep(500); // 100μs sleep - increased to reduce UART conflicts
     }
     if(TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)){
         uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;
@@ -960,10 +973,12 @@ static void* position_monitor_thread_function(void *arg) {
         } else if (mscnt_diff_actual < -512) {
             mscnt_diff_actual += 1024;
         }
+        log_trace("g_total_mscnt_delta before FINAL=%d", g_total_mscnt_delta);
         g_total_mscnt_delta += mscnt_diff_actual;
+        log_trace("g_total_mscnt_delta FINAL=%d", g_total_mscnt_delta);
         *step_ptr += mscnt_diff_actual;
                 
-        // Sync to disk every step
+        // Sync to disk
         msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
     }else{
         log_error("Failed to read MSCNT register at end of motion");
