@@ -191,4 +191,7 @@ bool tmc_position_monitor_get_error_stats(tmc_position_monitor_t *monitor, int32
  uint16_t calculate_expected_mscnt(uint32_t step_count, uint16_t microstep_resolution, bool direction);
  bool check_mscnt_position(TMC2209_t *driver, uint32_t step_count, uint16_t microstep_resolution);
  
+ // Global variable for MSCNT delta tracking
+ extern int32_t g_total_mscnt_delta;
+ 
  #endif // _TMC_MOTION_SIMPLE_H_

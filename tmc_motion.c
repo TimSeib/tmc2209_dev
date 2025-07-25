@@ -14,7 +14,13 @@
  #include <unistd.h>
  #include <errno.h>
  #include <math.h>
+ #include <fcntl.h>
+ #include <sys/mman.h>
+ #include <sys/stat.h>
  #include "log.h"
+
+ // Global variable to track total MSCNT delta for entire movement
+ int32_t g_total_mscnt_delta = 0;
 
  // ============================================================================
  // INTERNAL FUNCTIONS
@@ -255,6 +261,9 @@
          return false;
      }
      
+     // Reset the global delta counter at the start of each movement
+     g_total_mscnt_delta = 0;
+     
      // Calculate S-curve profile
      if (!calculate_s_curve_profile(motion)) {
          log_error("S-curve profile calculation failed");
@@ -322,15 +331,17 @@
          motion->thread_running = false;
      }
      
+  
+     // Disable motor
+     if (motion->gpio_ctx) {
+         tmc_gpio_enable_driver(motion->gpio_ctx, false);
+     }
+
      // Stop position monitoring thread
      if (motion->position_monitor.driver) {
          tmc_position_monitor_stop(&motion->position_monitor);
      }
      
-     // Disable motor
-     if (motion->gpio_ctx) {
-         tmc_gpio_enable_driver(motion->gpio_ctx, false);
-     }
      
      log_info("S-curve motion stopped");
      return true;
@@ -688,6 +699,40 @@ static void* position_monitor_thread_function(void *arg) {
         return NULL;
     }
     
+    // Initialize memory mapping for step counting
+    int fd = open("stepcount.dat", O_RDWR | O_CREAT, 0644);
+    struct stat st;
+    fstat(fd, &st);
+    bool file_was_empty = (st.st_size == 0);
+    if (fd == -1) {
+        log_error("Failed to open stepcount.dat file");
+        return NULL;
+    }
+    
+    // Ensure file has proper size for mapping
+    if (ftruncate(fd, sizeof(int32_t)) == -1) {
+        log_error("Failed to set file size for mapping");
+        close(fd);
+        return NULL;
+    }
+    
+    volatile int32_t *step_ptr = mmap(NULL, sizeof(int32_t), 
+                                    PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (step_ptr == MAP_FAILED) {
+        log_error("Failed to mmap stepcount.dat file");
+        close(fd);
+        return NULL;
+    }
+
+    // Only initialize if this is a brand new file
+    if (file_was_empty) {
+        *step_ptr = 0;
+        msync((void*)step_ptr, sizeof(int32_t), MS_SYNC);
+        log_info("Initialized new step counter to 0");
+    } else {
+        log_info("Restored step counter to %d", *step_ptr);
+    }
+    
     log_debug("Position monitoring thread started (timed polling)");
     
     uint64_t last_poll_time = get_time_us();
@@ -726,7 +771,8 @@ static void* position_monitor_thread_function(void *arg) {
                 last_poll_time = current_time;
                 first_poll = false;
             }
-        }
+                }
+        
         
         if (should_poll) {
             // Read MSCNT at microstep boundary
@@ -749,10 +795,10 @@ static void* position_monitor_thread_function(void *arg) {
                 
                 // For both directions, we add the relative MSCNT change to the initial position
                 // The calculate_expected_mscnt function already handles the direction
-                if (monitor->direction) { // clockwise
+                if (monitor->direction) { // counter-clockwise
                     expected_mscnt_absolute = (monitor->initial_mscnt + expected_mscnt_relative) % 1024;
-                } else { // counter-clockwise
-                    // For counter-clockwise, we subtract the change since MSCNT decreases
+                } else { // clockwise
+                    // For clockwise, we subtract the change since MSCNT decreases
                     int32_t signed_mscnt = (int32_t)monitor->initial_mscnt - (int32_t)expected_mscnt_relative;
                     // Handle wrap-around for negative values
                     while (signed_mscnt < 0) {
@@ -784,7 +830,20 @@ static void* position_monitor_thread_function(void *arg) {
                     } else if (mscnt_diff < -512) {
                         mscnt_diff += 1024;
                     }
-                    
+
+                    int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->last_mscnt;
+                     // Handle MSCNT wrap-around properly
+                     if (mscnt_diff_actual > 512) {
+                        mscnt_diff_actual -= 1024;
+                    } else if (mscnt_diff_actual < -512) {
+                        mscnt_diff_actual += 1024;
+                    }
+                    g_total_mscnt_delta += mscnt_diff_actual;
+                    *step_ptr += mscnt_diff_actual;
+            
+                     // Sync to disk every step
+                    msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
+
                     // Convert MSCNT difference to step difference
                     // MSCNT increments by 256 per full step
                     // Calculate precise microstep difference without rounding
@@ -802,10 +861,10 @@ static void* position_monitor_thread_function(void *arg) {
                     // For both directions, we add the relative MSCNT change to the initial position
                     // The calculate_expected_mscnt function already handles the direction
                     uint16_t expected_final_mscnt;
-                    if (monitor->direction) { // clockwise
+                    if (monitor->direction) { // counter-clockwise
                         expected_final_mscnt = (monitor->initial_mscnt + expected_mscnt_for_total_movement) % 1024;
-                    } else { // counter-clockwise
-                        // For counter-clockwise, we subtract the change since MSCNT decreases
+                    } else { // clockwise
+                        // For clockwise, we subtract the change since MSCNT decreases
                         int32_t signed_mscnt = (int32_t)monitor->initial_mscnt - (int32_t)expected_mscnt_for_total_movement;
                         // Handle wrap-around for negative values
                         while (signed_mscnt < 0) {
@@ -890,7 +949,33 @@ static void* position_monitor_thread_function(void *arg) {
         
         // Sleep for a short time to avoid busy waiting
         // This prevents the thread from consuming too much CPU while still being responsive
-        usleep(100); // 500μs sleep - increased to reduce UART conflicts
+        usleep(10); // 500μs sleep - increased to reduce UART conflicts
+    }
+    if(TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)){
+        uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;
+        int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->last_mscnt;
+        // Handle MSCNT wrap-around properly
+        if (mscnt_diff_actual > 512) {
+            mscnt_diff_actual -= 1024;
+        } else if (mscnt_diff_actual < -512) {
+            mscnt_diff_actual += 1024;
+        }
+        g_total_mscnt_delta += mscnt_diff_actual;
+        *step_ptr += mscnt_diff_actual;
+                
+        // Sync to disk every step
+        msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
+    }else{
+        log_error("Failed to read MSCNT register at end of motion");
+    }
+    
+    // Clean up memory mapping
+    if (step_ptr != MAP_FAILED) {
+        msync((void*)step_ptr, sizeof(uint32_t), MS_SYNC); // Final sync
+        munmap((void*)step_ptr, sizeof(uint32_t));
+    }
+    if (fd != -1) {
+        close(fd);
     }
     
     log_debug("Position monitoring thread stopped");
@@ -1087,6 +1172,9 @@ bool tmc_position_monitor_get_error_stats(tmc_position_monitor_t *monitor, int32
 // ============================================================================
  
  uint16_t calculate_expected_mscnt(uint32_t step_count, uint16_t microstep_resolution, bool direction) {
+     // Suppress unused parameter warning
+     (void)direction;
+     
      // MSCNT changes by 256 per FULL STEP, not per microstep
      // Convert microsteps to full steps first using floating point for accuracy
      float full_steps = (float)step_count / (float)microstep_resolution;

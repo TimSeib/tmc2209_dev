@@ -312,6 +312,11 @@ int main() {
     // Cleanup
     tmc_motion_s_curve_deinit(&motion);
     tmc_gpio_deinit(&gpio_ctx);
+    // Add MSCNT delta summary
+    log_info("=== MSCNT Delta Summary ===");
+    log_info("Total MSCNT delta for entire movement: %d MSCNT units", g_total_mscnt_delta);
+    log_info("Total MSCNT delta in full steps: %.3f full steps", (float)g_total_mscnt_delta / 256.0f);
+    log_info("Total MSCNT delta in microsteps: %.3f microsteps", (float)g_total_mscnt_delta * driver.config.microsteps / 256.0f);
     
     printf("\nS-curve motion test completed successfully!\n");
     
