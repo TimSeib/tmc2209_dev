@@ -65,7 +65,7 @@ int main() {
     log_info("Initializing TMC2209...");
     TMC2209_SetDefaults(&driver);
     driver.config.current = 600;      // 500mA
-    driver.config.microsteps = 8;     // change microsteps here
+    driver.config.microsteps = 8;     // change microsteps here (32 max for this S-curve)
     
     if (!TMC2209_Init(&driver)) {
         log_error("Failed to initialize TMC2209");

@@ -11,7 +11,8 @@ LIB_SOURCES = tmc_uart_rpi.c tmc2209.c common.c tmc_gpio.c tmc_motion.c tmc_moni
 LIB_OBJECTS = $(LIB_SOURCES:.c=.o)
 
 # Test executables
-TEST_TARGETS = tests/tmc2209_test tests/test_s_curve_calculations tests/test_s_curve_motion tests/test_uart_timing tests/test_uart_timing_detailed tests/msync_benchmark tests/read_stepcount
+TEST_TARGETS = tests/tmc2209_test tests/test_s_curve_calculations tests/test_s_curve_motion tests/test_uart_timing \
+			   tests/test_uart_timing_detailed tests/msync_benchmark tests/read_stepcount tests/move_lightbar
 
 # tests/test_motor_movement
 
@@ -52,6 +53,8 @@ tests/msync_benchmark: msync_benchmark.c
 tests/read_stepcount: read_stepcount.c
 	$(CC) $(CFLAGS) -o $@ $< -lrt
 
+tests/move_lightbar: move_lightbar.c $(LIB_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
 
 
 # Individual test targets
@@ -71,6 +74,7 @@ test_msync_benchmark: tests/msync_benchmark
 
 test_read_stepcount: tests/read_stepcount
 
+test_move_lightbar: tests/move_lightbar
 
 
 # Compile library objects

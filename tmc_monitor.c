@@ -314,7 +314,7 @@ static void* position_monitor_thread_function(void *arg) {
                 log_warn("Failed to read MSCNT register at step %u", current_step_count);
             }
         }
-        usleep(500); // 100μs sleep - increased to reduce UART conflicts
+        usleep(500); // 350μs-500μs sleep - must be present otherwise there are UART conflicts
     }
     if(TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)){
         uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;
