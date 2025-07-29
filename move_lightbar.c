@@ -122,59 +122,17 @@ typedef struct {
  * @param sig Signal number
  */
 static void signal_handler(int sig) {
-    log_info("Received signal %d (%s), initiating graceful shutdown...", sig, strsignal(sig));
+    log_info("Received signal %d (%s), initiating graceful shutdown...", sig, 
+             sig == SIGINT ? "Interrupt" : 
+             sig == SIGTERM ? "Terminate" : 
+             sig == SIGQUIT ? "Quit" : "Unknown");
+    
+    if (g_shutdown_requested) {
+        log_warn("Shutdown already in progress, forcing exit");
+        exit(1);
+    }
+    
     g_shutdown_requested = true;
-}
-
-/**
- * @brief Save current position and state to file
- * 
- * @param current_mscnt Current MSCNT value
- * @param direction Current direction
- * @param valid_bit Whether position is valid
- * @return true if save successful, false otherwise
- */
-static bool save_position_state(uint32_t current_mscnt, int direction, int valid_bit) {
-    // Save to stepcount.dat with current position and direction
-    int fd = open("stepcount.dat", O_RDWR | O_CREAT, 0644);
-    if (fd == -1) {
-        log_error("Failed to open stepcount.dat for saving: %s", strerror(errno));
-        return false;
-    }
-    
-    // Ensure file has proper size
-    if (ftruncate(fd, sizeof(int32_t)) == -1) {
-        log_error("Failed to set file size: %s", strerror(errno));
-        close(fd);
-        return false;
-    }
-    
-    // Memory map the file
-    volatile int32_t *step_ptr = mmap(NULL, sizeof(int32_t), 
-                                    PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (step_ptr == MAP_FAILED) {
-        log_error("Failed to mmap stepcount.dat for saving: %s", strerror(errno));
-        close(fd);
-        return false;
-    }
-    
-    // Save current MSCNT value
-    *step_ptr = g_total_mscnt_delta;
-    
-    // Sync to disk
-    if (msync((void*)step_ptr, sizeof(int32_t), MS_SYNC) == -1) {
-        log_error("Failed to sync stepcount.dat: %s", strerror(errno));
-    }
-    
-    // Cleanup
-    munmap((void*)step_ptr, sizeof(int32_t));
-    close(fd);
-    
-    log_info("Saved position state: MSCNT=%u, Direction=%s, Valid=%s", 
-            current_mscnt, direction ? "counter-clockwise" : "clockwise", 
-            valid_bit ? "true" : "false");
-    
-    return true;
 }
 
 /**
@@ -187,7 +145,7 @@ static bool save_position_state(uint32_t current_mscnt, int direction, int valid
  * @param total_mscnt_delta Total MSCNT delta accumulated
  * @return true if save successful, false otherwise
  */
-static bool save_motion_state(uint32_t current_mscnt, uint32_t current_step_count, 
+static bool save_motion_state(uint32_t current_mscnt, uint32_t current_step_count,
                             int direction, int valid_bit, int32_t total_mscnt_delta) {
     // Save final MSCNT delta to stepcount.dat (this is the accurate accumulated value)
     int fd = open("stepcount.dat", O_RDWR | O_CREAT, 0644);
@@ -213,7 +171,7 @@ static bool save_motion_state(uint32_t current_mscnt, uint32_t current_step_coun
     }
     
     // Save the final MSCNT delta (this is the accurate accumulated value)
-    *step_ptr = total_mscnt_delta;
+    *step_ptr = current_mscnt;
     
     // Sync to disk
     if (msync((void*)step_ptr, sizeof(int32_t), MS_SYNC) == -1) {
@@ -342,6 +300,97 @@ static void setup_signal_handlers(void) {
 void set_final_actions_callback(void (*callback)(void)) {
     g_final_actions_callback = callback;
     log_debug("Final actions callback %s", callback ? "set" : "cleared");
+}
+
+/**
+ * @brief Save motor direction to file
+ * 
+ * @param direction 0 for clockwise, 1 for counter-clockwise
+ * @return true if successful, false otherwise
+ */
+static bool save_motor_direction(int direction) {
+    int fd = open("direction.dat", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {
+        log_error("Failed to open direction.dat for writing: %s", strerror(errno));
+        return false;
+    }
+    
+    // Write direction as binary int32_t
+    int32_t dir_value = direction;
+    if (write(fd, &dir_value, sizeof(int32_t)) != sizeof(int32_t)) {
+        log_error("Failed to write to direction.dat: %s", strerror(errno));
+        close(fd);
+        return false;
+    }
+    
+    close(fd);
+    log_info("Saved motor direction: %s (value: %d)", 
+             direction ? "counter-clockwise" : "clockwise", direction);
+    return true;
+}
+
+/**
+ * @brief Read motor direction from file
+ * 
+ * @return 0 for clockwise, 1 for counter-clockwise, defaults to 0 if file not found
+ */
+static int read_motor_direction(void) {
+    int fd = open("direction.dat", O_RDONLY);
+    if (fd == -1) {
+        log_warn("direction.dat not found, assuming clockwise direction");
+        return 0; // Default to clockwise
+    }
+    
+    // Check file size
+    struct stat st;
+    if (fstat(fd, &st) == -1) {
+        log_warn("Failed to get direction.dat stats, assuming clockwise direction");
+        close(fd);
+        return 0;
+    }
+    
+    if (st.st_size != sizeof(int32_t)) {
+        log_warn("direction.dat size is %ld bytes, expected %zu bytes, assuming clockwise direction", 
+                st.st_size, sizeof(int32_t));
+        close(fd);
+        return 0;
+    }
+    
+    // Read direction value
+    int32_t direction = 0;
+    if (read(fd, &direction, sizeof(int32_t)) != sizeof(int32_t)) {
+        log_warn("Failed to read direction.dat, assuming clockwise direction");
+        close(fd);
+        return 0;
+    }
+    
+    close(fd);
+    log_info("Read motor direction from file: %s (value: %d)", 
+             direction ? "counter-clockwise" : "clockwise", direction);
+    return direction;
+}
+
+/**
+ * @brief Read current motor direction from TMC2209 hardware (unused - replaced by file-based tracking)
+ * 
+ * @param driver TMC2209 driver instance
+ * @return true if counter-clockwise (DIR=1), false if clockwise (DIR=0)
+ */
+static bool read_motor_direction_hardware(TMC2209_t *driver) {
+    if (!driver) {
+        log_warn("Invalid driver, assuming clockwise direction");
+        return false;
+    }
+    
+    // Read the IOIN register from TMC2209 to get direction pin state
+    if (TMC2209_ReadRegister(driver, (TMC2209_datagram_t *)&driver->ioin)) {
+        bool direction = driver->ioin.reg.dir;
+        log_info("Read motor direction from hardware: %s", direction ? "counter-clockwise" : "clockwise");
+        return direction;
+    } else {
+        log_warn("Failed to read motor direction from hardware, assuming clockwise");
+        return false;
+    }
 }
 
 void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_profile, motion_profile_t *default_close_profile) {
@@ -475,7 +524,7 @@ int main(int argc, char *argv[]) {
     // get the current position of the lightbar (stepcount.dat)
     int32_t current_mscnt = 0;
     int valid_bit = 1; // Assume valid for now
-    int direction = 0; // 0 = clockwise, 1 = counter-clockwise
+    int direction = 0; // 0 = clockwise, 1 = counter-clockwise (will be read from hardware)
     
     // Read stepcount.dat file (contains binary int32_t MSCNT value)
     int fd = open("stepcount.dat", O_RDONLY);
@@ -513,18 +562,58 @@ int main(int argc, char *argv[]) {
         current_mscnt = 0;
     }
 
+    // Read current motor direction from hardware
+    direction = read_motor_direction();
+
+    // // get the current position of the lightbar (microstepcount.dat)
+    // int32_t current_microstep_count = 0;
+
+    // // Read microstepcount.dat file (contains binary int32_t MSCNT value)
+    // int fd1 = open("microstepcount.dat", O_RDONLY);
+    // if (fd1 != -1) {
+    //     // Check file size
+    //     struct stat st1;
+    //     if (fstat(fd1, &st1) == -1) {
+    //         log_warn("Failed to get file stats, using default MSCNT=0");
+    //         current_microstep_count = 0;
+    //     } else if (st1.st_size != sizeof(int32_t)) {
+    //         log_warn("File size is %ld bytes, expected %zu bytes, using default MSCNT=0", 
+    //                 st1.st_size, sizeof(int32_t));
+    //         current_microstep_count = 0;
+    //     } else {
+    //         // Memory map the file
+    //         volatile int32_t *value_ptr1 = mmap(NULL, sizeof(int32_t), 
+    //                                           PROT_READ, MAP_SHARED, fd1, 0);
+    //         if (value_ptr1 == MAP_FAILED) {
+    //             log_warn("Failed to mmap microstepcount.dat, using default MSCNT=0");
+    //             current_microstep_count = 0;
+    //         } else {
+    //             // Read the value
+    //             int32_t value = *value_ptr1;
+    //             current_microstep_count = value;
+    //             log_info("Read from microstepcount.dat: MSCNT=%u (decimal: %d, hex: 0x%08x)", 
+    //                     current_microstep_count, value, value);
+                
+    //             // Cleanup
+    //             munmap((void*)value_ptr1, sizeof(int32_t));
+    //         }
+    //     }
+    //     close(fd1);
+    // } else {
+    //     log_warn("microstepcount.dat not found, using default MSCNT=0");
+    //     current_microstep_count = 0;
+    // }
+
     // perform checks based on value of stepcount.dat
     float target_angle_degrees = 0.0f;
     motion_profile_t *selected_profile = NULL;
     
     // Define profile ranges based on MSCNT values
-    const int32_t DEFAULT_PROFILE_MAX = 552152;  // 38.999 deg
-    const int32_t SLOW_PROFILE_MIN = 552152;     // 38.999 deg
-    const int32_t SLOW_PROFILE_MAX = 553696;     // 42.5 deg
-    const int32_t DEFAULT_CLOSE_MIN = 553696;    // 42.5 deg
+    const int32_t DEFAULT_PROFILE_MAX = 537984;  // 38 deg
+    const int32_t DEFAULT_PROFILE_MIN = 99104;  // 7 deg
     
     // Add tolerance for MAX_MSCNT comparison (within 1000 MSCNT units)
-    const int32_t MAX_MSCNT_TOLERANCE = 5;
+    const int32_t MAX_MSCNT_TOLERANCE = 32;
     
     // Create profile instances
     motion_profile_t default_profile, slow_profile, default_close_profile;
@@ -568,22 +657,22 @@ int main(int argc, char *argv[]) {
         log_info("Calculated target angle: %.5f degrees (to fully close)", target_angle_degrees);
 
     // Logic for moving between open and closed > 39 degrees 
-    } else if (current_mscnt >= SLOW_PROFILE_MIN && current_mscnt <= SLOW_PROFILE_MAX) {
-        // If stepcount.dat is in slow profile range, use current motor direction
-        log_info("Current position in slow range, using SLOW_PROFILE");
-        selected_profile = &slow_profile;
+    } else if (abs(current_mscnt) >= DEFAULT_PROFILE_MIN && abs(current_mscnt) <= DEFAULT_PROFILE_MAX) {
+        // If stepcount.dat is in default profile range, use saved motor direction from file
+        log_info("Current position in default range in between 7 and 38 degrees, using DEFAULT_PROFILE");
+        selected_profile = &default_profile;
 
-        // Use the direction from stepcount.dat to determine target
+        // Use the direction from saved file to determine target
         if (direction == 0) {
-            // Currently moving clockwise (opening), continue to fully open
-            float desired_output_revolutions = (float)(MAX_MSCNT - current_mscnt) / (selected_profile->gear_ratio * 200.0f * 256.0f);
-            target_angle_degrees = roundf(desired_output_revolutions * 360.0f);
-            log_info("Continuing clockwise to fully open, target angle: %.2f degrees", target_angle_degrees);
+            // Saved direction shows clockwise (opening), continue to fully open
+            float desired_output_revolutions = (float)(MAX_MSCNT - abs(current_mscnt)) / (selected_profile->gear_ratio * 200.0f * 256.0f);
+            target_angle_degrees = desired_output_revolutions * 360.0f;
+            log_info("Saved direction is clockwise (opening), continuing to fully open, target angle: %.2f degrees", target_angle_degrees);
         } else {
-            // Currently moving counter-clockwise (closing), continue to fully close
-            float desired_output_revolutions = (float)current_mscnt / (selected_profile->gear_ratio * 200.0f * 256.0f);
-            target_angle_degrees = roundf(desired_output_revolutions * 360.0f);
-            log_info("Continuing counter-clockwise to fully close, target angle: %.2f degrees", target_angle_degrees);
+            // Saved direction shows counter-clockwise (closing), continue to fully close
+            float desired_output_revolutions = (float)abs(current_mscnt) / (selected_profile->gear_ratio * 200.0f * 256.0f);
+            target_angle_degrees = desired_output_revolutions * 360.0f;
+            log_info("Saved direction is counter-clockwise (closing), continuing to fully close, target angle: %.2f degrees", target_angle_degrees);
         }
 
     // open/close remaining degrees
@@ -607,6 +696,12 @@ int main(int argc, char *argv[]) {
 
     // Start S-curve motion (extract from selected profile)
     log_info("Starting S-curve motion...");
+    
+    // Save the direction we're about to use
+    if (!save_motor_direction(direction)) {
+        log_warn("Failed to save motor direction, continuing anyway");
+    }
+    
     if (!tmc_motion_s_curve_start(&motion, 
                                  target_angle_degrees,
                                  selected_profile->max_speed_rpm,
@@ -654,21 +749,27 @@ int main(int argc, char *argv[]) {
         log_info("Final MSCNT delta after motion stopped: %d", total_mscnt_delta);
         
         // Calculate the final MSCNT position by adding delta to initial position
-        // We need to read the initial MSCNT from the monitor
-        uint32_t final_mscnt = 0;
+        // The initial position was read from stepcount.dat as current_mscnt
+        int32_t final_mscnt = 0;
         if (g_current_motion && g_current_motion->position_monitor.driver) {
-            // Get initial MSCNT from position monitor
-            TMC2209_ReadRegister(g_current_driver, (TMC2209_datagram_t *)&g_current_driver->mscnt);
-            uint16_t actual_mscnt = g_current_driver->mscnt.reg.mscnt;
-            final_mscnt = (uint32_t)((int32_t)actual_mscnt + total_mscnt_delta);
-            log_info("Final MSCNT: %u", final_mscnt);
+            // Calculate final MSCNT: initial_position + delta
+            // Since we started from current_mscnt and moved by total_mscnt_delta
+            final_mscnt = ((int32_t)current_mscnt + total_mscnt_delta);
+            log_info("Initial MSCNT: %d, Delta: %d, Final MSCNT: %u", 
+                    current_mscnt, total_mscnt_delta, final_mscnt);
         } else {
             log_warn("Position monitor not available, using step count only");
+            final_mscnt = ((int32_t)current_mscnt + total_mscnt_delta);
         }
         
         // Save current position and state
         int direction = g_current_motion ? g_current_motion->direction : 0;
         int valid_bit = 1; // Assume valid since we have step count
+        
+        // Save the current direction before shutdown
+        if (!save_motor_direction(direction)) {
+            log_warn("Failed to save motor direction during shutdown");
+        }
         
         graceful_shutdown(final_mscnt, current_step_count, direction, valid_bit, total_mscnt_delta);
         return 1; // Exit with error code to indicate interrupted

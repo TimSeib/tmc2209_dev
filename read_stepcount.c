@@ -38,21 +38,21 @@ int main() {
         close(fd);
         return -1;
     }
-    
     // Read the value
-    int32_t value = *value_ptr;
+    int32_t mscnt_value = *value_ptr;
     
+
     // Print the value in different formats
     printf("Value from stepcount.dat:\n");
-    printf("  Decimal: %d\n", value);
-    printf("  Hexadecimal: 0x%08x\n", value);
-    printf("  Unsigned: %u\n", (unsigned int)value);
+    printf("  Decimal: %d\n", mscnt_value);
+    printf("  Hexadecimal: 0x%08x\n", mscnt_value);
+    printf("  Unsigned: %u\n", (unsigned int)mscnt_value);
     
     // Convert to more meaningful units
     printf("\nConverted units:\n");
-    printf("  MSCNT units: %d\n", value);
-    printf("  Full steps: %.3f\n", (float)value / 256.0f);
-    printf("  Microsteps (8 mres): %.3f\n", (float)value * 8.0f / 256.0f);
+    printf("  MSCNT units: %d\n", mscnt_value);
+    printf("  Full steps: %.3f\n", (float)mscnt_value / 256.0f);
+    printf("  Microsteps (8 mres): %.3f\n", (float)mscnt_value * 8.0f / 256.0f);
     
     // Cleanup
     munmap((void*)value_ptr, sizeof(int32_t));
