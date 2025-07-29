@@ -153,7 +153,7 @@ static void* position_monitor_thread_function(void *arg) {
                     *step_ptr += mscnt_diff_actual;
                 
                     // Sync to disk every step
-                    msync((void*)step_ptr, sizeof(int32_t), MS_SYNC);
+                    msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
                     first_poll = false;
                 }else{
                     int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->last_mscnt;
@@ -168,7 +168,7 @@ static void* position_monitor_thread_function(void *arg) {
                     *step_ptr += mscnt_diff_actual;
                 
                     // Sync to disk every step
-                    msync((void*)step_ptr, sizeof(int32_t), MS_SYNC);
+                    msync((void*)step_ptr, sizeof(int32_t), MS_ASYNC);
                 }
                 
                 // Use the step count that was current when MSCNT was read
