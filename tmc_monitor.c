@@ -311,7 +311,9 @@ static void* position_monitor_thread_function(void *arg) {
                 log_trace("step_count=%u, expected_mscnt_absolute=%u, initial_mscnt=%u",
                        current_step_count_at_mscnt_read, expected_mscnt_absolute, monitor->initial_mscnt);
             } else {
-                log_warn("Failed to read MSCNT register at step %u", current_step_count);
+
+                log_warn("Failed to read MSCNT register at step %u (step_count=%u, poll_interval=%u)", 
+                        current_step_count, current_step_count, monitor->poll_interval_steps);
             }
         }
         usleep(500); // 350μs-500μs sleep - must be present otherwise there are UART conflicts

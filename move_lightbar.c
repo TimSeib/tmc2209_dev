@@ -565,45 +565,6 @@ int main(int argc, char *argv[]) {
     // Read current motor direction from hardware
     direction = read_motor_direction();
 
-    // // get the current position of the lightbar (microstepcount.dat)
-    // int32_t current_microstep_count = 0;
-
-    // // Read microstepcount.dat file (contains binary int32_t MSCNT value)
-    // int fd1 = open("microstepcount.dat", O_RDONLY);
-    // if (fd1 != -1) {
-    //     // Check file size
-    //     struct stat st1;
-    //     if (fstat(fd1, &st1) == -1) {
-    //         log_warn("Failed to get file stats, using default MSCNT=0");
-    //         current_microstep_count = 0;
-    //     } else if (st1.st_size != sizeof(int32_t)) {
-    //         log_warn("File size is %ld bytes, expected %zu bytes, using default MSCNT=0", 
-    //                 st1.st_size, sizeof(int32_t));
-    //         current_microstep_count = 0;
-    //     } else {
-    //         // Memory map the file
-    //         volatile int32_t *value_ptr1 = mmap(NULL, sizeof(int32_t), 
-    //                                           PROT_READ, MAP_SHARED, fd1, 0);
-    //         if (value_ptr1 == MAP_FAILED) {
-    //             log_warn("Failed to mmap microstepcount.dat, using default MSCNT=0");
-    //             current_microstep_count = 0;
-    //         } else {
-    //             // Read the value
-    //             int32_t value = *value_ptr1;
-    //             current_microstep_count = value;
-    //             log_info("Read from microstepcount.dat: MSCNT=%u (decimal: %d, hex: 0x%08x)", 
-    //                     current_microstep_count, value, value);
-                
-    //             // Cleanup
-    //             munmap((void*)value_ptr1, sizeof(int32_t));
-    //         }
-    //     }
-    //     close(fd1);
-    // } else {
-    //     log_warn("microstepcount.dat not found, using default MSCNT=0");
-    //     current_microstep_count = 0;
-    // }
-
     // perform checks based on value of stepcount.dat
     float target_angle_degrees = 0.0f;
     motion_profile_t *selected_profile = NULL;
@@ -611,6 +572,8 @@ int main(int argc, char *argv[]) {
     // Define profile ranges based on MSCNT values
     const int32_t DEFAULT_PROFILE_MAX = 537984;  // 38 deg
     const int32_t DEFAULT_PROFILE_MIN = 99104;  // 7 deg
+    const int32_t SLOW_PROFILE_MAX = 601696;  // 38 deg
+    const int32_t SLOW_PROFILE_MIN = 35392;  // 38 deg
     
     // Add tolerance for MAX_MSCNT comparison (within 1000 MSCNT units)
     const int32_t MAX_MSCNT_TOLERANCE = 32;
@@ -675,9 +638,55 @@ int main(int argc, char *argv[]) {
             log_info("Saved direction is counter-clockwise (closing), continuing to fully close, target angle: %.2f degrees", target_angle_degrees);
         }
 
-    // open/close remaining degrees
+    // make sure to account for direction of the motor
+    // Logic for moving between open and closed for sections less than 7 degrees
+    } else if ((current_mscnt > SLOW_PROFILE_MIN  && current_mscnt < DEFAULT_PROFILE_MIN)){
+        
+        log_info("Current position in slow range in between 2.5-7 degrees");
+        
+        // Use the direction from saved file to determine target
+        // If we are going clockwise, we are opening and should continue to 45*
+        if (direction == 0) {
+            selected_profile = &default_profile;
+            // Saved direction shows clockwise (opening), continue to fully open
+            float desired_output_revolutions = (float)(MAX_MSCNT - abs(current_mscnt)) / (selected_profile->gear_ratio * 200.0f * 256.0f);
+            target_angle_degrees = desired_output_revolutions * 360.0f;
+            log_info("Saved direction is clockwise (opening), continuing to fully open, target angle: %.2f degrees", target_angle_degrees);
+
+        // If we are going counter-clockwise, we are closing and should continue to 0*
+        } else {
+            selected_profile = &slow_profile;
+            // Saved direction shows counter-clockwise (closing), continue to fully close
+            float desired_output_revolutions = (float)abs(current_mscnt) / (selected_profile->gear_ratio * 200.0f * 256.0f);
+            target_angle_degrees = desired_output_revolutions * 360.0f;
+            log_info("Saved direction is counter-clockwise (closing), continuing to fully close, target angle: %.2f degrees", target_angle_degrees);
+        }
+        
+    // Logic for moving between open and closed for sections greater than 38 degrees
+    } else if(current_mscnt < SLOW_PROFILE_MAX && current_mscnt > DEFAULT_PROFILE_MAX){
+
+        log_info("Current position in slow range in between 38-42.5 degrees");
+
+        // Use the direction from saved file to determine target
+
+        // If we are going clockwise, we are opening and should continue to 45*
+        if (direction == 0) {
+            selected_profile = &slow_profile;
+            // Saved direction shows clockwise (opening), continue to fully open
+            float desired_output_revolutions = (float)(MAX_MSCNT - abs(current_mscnt)) / (selected_profile->gear_ratio * 200.0f * 256.0f);
+            target_angle_degrees = desired_output_revolutions * 360.0f;
+            log_info("Saved direction is clockwise (opening), continuing to fully open, target angle: %.2f degrees", target_angle_degrees);
+
+        // If we are going counter-clockwise, we are closing and should continue to 0*
+        } else {
+            selected_profile = &default_profile;
+            // Saved direction shows counter-clockwise (closing), continue to fully close
+            float desired_output_revolutions = (float)abs(current_mscnt) / (selected_profile->gear_ratio * 200.0f * 256.0f);
+            target_angle_degrees = desired_output_revolutions * 360.0f;
+            log_info("Saved direction is counter-clockwise (closing), continuing to fully close, target angle: %.2f degrees", target_angle_degrees);
+        }
     } else {
-        // Default to close if position is unknown
+        // Default to close if position is unknown or too small
         log_warn("Unknown position, defaulting to close with DEFAULT_CLOSE_PROFILE");
         selected_profile = &default_close_profile;
         target_angle_degrees = 45.0f; // Move 45 degrees in closing direction (minimum valid angle)
