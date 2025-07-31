@@ -113,12 +113,14 @@ static void* position_monitor_thread_function(void *arg) {
         // 1. We're at a full step boundary (step count is multiple of microstep_resolution)
         // 2. At least 1ms has passed since last poll (to avoid excessive UART traffic)
         // 3. Either this is the first poll OR we've moved to a new step boundary
+        // 4. OR if we haven't polled in the last 10ms (ensure we don't miss final updates)
         if (current_step_count > 0 && 
-            (current_step_count % monitor->poll_interval_steps) == 0 &&
+            ((current_step_count % monitor->poll_interval_steps) == 0 ||
+             (current_time - last_poll_time) >= 10000) && // 10ms maximum interval
             (current_time - last_poll_time) >= 1000) { // 1ms minimum interval
             
             // For first poll, always do it. For subsequent polls, check if we've moved to a new boundary
-            if (first_poll || current_step_count != last_step_count) {
+            if (first_poll || current_step_count != last_step_count || (current_time - last_poll_time) >= 10000) {
                 should_poll = true;
                 last_step_count = current_step_count;
                 last_poll_time = current_time;
@@ -320,6 +322,32 @@ static void* position_monitor_thread_function(void *arg) {
     }
     if(TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)){
         uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;
+        
+        // Get the current step count at the time of final MSCNT reading
+        uint32_t final_step_count = 0;
+        if (pthread_mutex_lock(&monitor->data_mutex) == 0) {
+            final_step_count = monitor->last_step_count;
+            pthread_mutex_unlock(&monitor->data_mutex);
+        }
+        
+        // Calculate the expected MSCNT for the final step count
+        uint16_t expected_final_mscnt = calculate_expected_mscnt(final_step_count, monitor->microstep_resolution, monitor->direction);
+        
+        // For both directions, we add the relative MSCNT change to the initial position
+        uint16_t expected_mscnt_absolute;
+        if (monitor->direction) { // counter-clockwise
+            expected_mscnt_absolute = (monitor->initial_mscnt + expected_final_mscnt) % 1024;
+        } else { // clockwise
+            // For clockwise, we subtract the change since MSCNT decreases
+            int32_t signed_mscnt = (int32_t)monitor->initial_mscnt - (int32_t)expected_final_mscnt;
+            // Handle wrap-around for negative values
+            while (signed_mscnt < 0) {
+                signed_mscnt += 1024;
+            }
+            expected_mscnt_absolute = (uint16_t)signed_mscnt;
+        }
+        
+        // Calculate the final MSCNT difference from the last recorded position
         int32_t mscnt_diff_actual = (int32_t)actual_mscnt - (int32_t)monitor->last_mscnt;
         // Handle MSCNT wrap-around properly
         if (mscnt_diff_actual > 512) {
@@ -327,9 +355,13 @@ static void* position_monitor_thread_function(void *arg) {
         } else if (mscnt_diff_actual < -512) {
             mscnt_diff_actual += 1024;
         }
+        
         log_trace("g_total_mscnt_delta before FINAL=%d", g_total_mscnt_delta);
         g_total_mscnt_delta += mscnt_diff_actual;
         log_trace("g_total_mscnt_delta FINAL=%d", g_total_mscnt_delta);
+        log_trace("Final MSCNT reading: actual=%u, expected=%u, diff=%d, step_count=%u", 
+               actual_mscnt, expected_mscnt_absolute, mscnt_diff_actual, final_step_count);
+        
         *step_ptr += mscnt_diff_actual;
                 
         // Sync to disk
@@ -340,7 +372,7 @@ static void* position_monitor_thread_function(void *arg) {
     
     // Clean up memory mapping
     if (step_ptr != MAP_FAILED) {
-        msync((void*)step_ptr, sizeof(uint32_t), MS_SYNC); // Final sync
+        msync((void*)step_ptr, sizeof(uint32_t), MS_ASYNC); // Final sync
         munmap((void*)step_ptr, sizeof(uint32_t));
     }
     if (fd != -1) {

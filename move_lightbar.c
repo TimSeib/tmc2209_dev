@@ -395,8 +395,7 @@ static bool read_motor_direction_hardware(TMC2209_t *driver) {
 
 void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_profile, motion_profile_t *default_close_profile) {
     // Get environment variables
-    const char *msres_fast = getenv("MSRES_FAST");
-    const char *msres_slow = getenv("MSRES_SLOW");
+    const char *msres_default = getenv("MSRES_DEFAULT");
     const char *max_speed_rpm_fast = getenv("MAX_SPEED_RPM_FAST");
     const char *max_speed_rpm_slow = getenv("MAX_SPEED_RPM_SLOW");
     const char *max_speed_rpm_close = getenv("MAX_SPEED_RPM_CLOSE");
@@ -414,7 +413,7 @@ void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_
     default_profile->start_speed_hz = start_speed ? atof(start_speed) : 100.0;
     default_profile->start_acceleration_hz = start_acceleration ? atof(start_acceleration) : 0.0;
     default_profile->gear_ratio = gear_ratio ? atof(gear_ratio) : 99.548;
-    default_profile->microstep_resolution = msres_fast ? atoi(msres_fast) : 8;
+    default_profile->microstep_resolution = msres_default ? atoi(msres_default) : 8;
     
     // Create slow profile
     strcpy(slow_profile->name, "SLOW_PROFILE");
@@ -424,7 +423,7 @@ void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_
     slow_profile->start_speed_hz = start_speed ? atof(start_speed) : 100.0;
     slow_profile->start_acceleration_hz = start_acceleration ? atof(start_acceleration) : 0.0;
     slow_profile->gear_ratio = gear_ratio ? atof(gear_ratio) : 99.548;
-    slow_profile->microstep_resolution = msres_slow ? atoi(msres_slow) : 32;
+    slow_profile->microstep_resolution = msres_default ? atoi(msres_default) : 8;
     
     // Create default close profile
     strcpy(default_close_profile->name, "DEFAULT_CLOSE_PROFILE (200 seconds)");
@@ -434,7 +433,7 @@ void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_
     default_close_profile->start_speed_hz = start_speed ? atof(start_speed) : 100.0;
     default_close_profile->start_acceleration_hz = start_acceleration ? atof(start_acceleration) : 0.0;
     default_close_profile->gear_ratio = gear_ratio ? atof(gear_ratio) : 99.548;
-    default_close_profile->microstep_resolution = msres_slow ? atoi(msres_slow) : 32;
+    default_close_profile->microstep_resolution = msres_default ? atoi(msres_default) : 8;
     
     // Print profiles for debugging
     motion_profile_t profiles[] = {*default_profile, *slow_profile, *default_close_profile};
@@ -779,7 +778,7 @@ int main(int argc, char *argv[]) {
         if (!save_motor_direction(direction)) {
             log_warn("Failed to save motor direction during shutdown");
         }
-        
+        usleep(1000); // 1ms delay to ensure the final MSCNT reading is captured
         graceful_shutdown(final_mscnt, current_step_count, direction, valid_bit, total_mscnt_delta);
         return 1; // Exit with error code to indicate interrupted
     }else
