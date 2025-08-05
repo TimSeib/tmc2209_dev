@@ -286,6 +286,8 @@ bool TMC2209_Init (TMC2209_t *driver)
     driver->gconf.reg.I_scale_analog = 0;     // Use digital current scaling
     driver->gconf.reg.index_step = 1;         // Index step enabled
     driver->gconf.reg.index_otpw = 0;        // Index output power down disabled
+    driver->tcoolthrs.reg.tcoolthrs = 1500; // set above TSTEP to enable stallguard
+    driver->sgthrs.reg.threshold = 3;       // 2*SGTHRS >= SG_RESULT means stall
 
     // Note: These settings use factory defaults from OTP memory
     // driver->gconf.reg.internal_Rsense = 0;  // External sense resistor
@@ -305,12 +307,13 @@ bool TMC2209_Init (TMC2209_t *driver)
     TMC2209_WriteRegister(driver, (TMC2209_datagram_t *)&driver->pwmconf);
     TMC2209_WriteRegister(driver, (TMC2209_datagram_t *)&driver->tpwmthrs);
     TMC2209_WriteRegister(driver, (TMC2209_datagram_t *)&driver->tcoolthrs);
+    TMC2209_WriteRegister(driver, (TMC2209_datagram_t *)&driver->sgthrs);
     TMC2209_SetCurrent(driver, driver->config.current, driver->config.hold_current_pct);
 
     // Step 6: Verify communication by checking interface counter
-    // Should have incremented by 7 (the number of write operations)
+    // Should have incremented by 8 (the number of write operations)
     TMC2209_ReadRegister(driver, (TMC2209_datagram_t *)&driver->ifcnt);
-    return (((uint8_t)driver->ifcnt.reg.count - ifcnt) & 0xFF) == 7;
+    return (((uint8_t)driver->ifcnt.reg.count - ifcnt) & 0xFF) == 8;
 }
 
 uint16_t TMC2209_GetCurrent (TMC2209_t *driver, trinamic_current_t type)

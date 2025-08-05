@@ -1,7 +1,6 @@
 add_library(trinamic INTERFACE)
 
 target_sources(trinamic INTERFACE
- ${CMAKE_CURRENT_LIST_DIR}/common.c
  ${CMAKE_CURRENT_LIST_DIR}/tmc_interface.c
  ${CMAKE_CURRENT_LIST_DIR}/tmc2130.c
  ${CMAKE_CURRENT_LIST_DIR}/tmc2130hal.c

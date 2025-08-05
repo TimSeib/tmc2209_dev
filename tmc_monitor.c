@@ -127,7 +127,7 @@ static void* position_monitor_thread_function(void *arg) {
             }
         }
         
-        if (should_poll) {
+        if (should_poll && (current_step_count % monitor->poll_interval_steps == 0)) {
             // Read MSCNT at microstep boundary
             if (TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)) {
                 uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;
@@ -313,9 +313,9 @@ static void* position_monitor_thread_function(void *arg) {
                 log_trace("step_count=%u, expected_mscnt_absolute=%u, initial_mscnt=%u",
                        current_step_count_at_mscnt_read, expected_mscnt_absolute, monitor->initial_mscnt);
             } else {
-
-                log_warn("Failed to read MSCNT register at step %u (step_count=%u, poll_interval=%u)", 
-                        current_step_count, current_step_count, monitor->poll_interval_steps);
+                int mod_result = current_step_count % monitor->poll_interval_steps;
+                log_warn("Failed to read MSCNT register at step %u (step_count=%u, poll_interval=%u, mod_result=%d)", 
+                        current_step_count, current_step_count, monitor->poll_interval_steps, mod_result);
             }
         }
         usleep(500); // 350μs-500μs sleep - must be present otherwise there are UART conflicts

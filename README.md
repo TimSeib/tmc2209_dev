@@ -36,8 +36,8 @@ This library provides a comprehensive interface for Trinamic stepper motor drive
 ├── tmc2209.c          # TMC2209 implementation
 ├── tmc2209hal.h       # Hardware abstraction layer interface
 ├── tmc2209hal.c       # Hardware abstraction layer implementation
-├── common.h           # Shared structures and constants
-├── common.c           # Shared utility functions
+├── tmc2209.h          # TMC2209 driver interface (includes common structures)
+├── tmc2209.c          # TMC2209 driver implementation (includes common functions)
 ├── tmchal.h           # Hardware abstraction layer base
 ├── tmc_i2c_interface.h # I2C interface definitions
 ├── tmc_interface.c    # Interface implementation

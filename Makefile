@@ -7,12 +7,13 @@ CFLAGS = -Wall -Wextra -std=gnu99 -O2
 LDFLAGS = -lgpiod -lm
 
 # Source files for the library
-LIB_SOURCES = tmc_uart_rpi.c tmc2209.c common.c tmc_gpio.c tmc_motion.c tmc_monitor.c log.c
+LIB_SOURCES = tmc_uart_rpi.c tmc2209.c tmc_gpio.c tmc_motion.c tmc_monitor.c log.c tmc_stallguard.c common.c
 LIB_OBJECTS = $(LIB_SOURCES:.c=.o)
 
 # Test executables
 TEST_TARGETS = tests/tmc2209_test tests/test_s_curve_calculations tests/test_s_curve_motion tests/test_uart_timing \
-			   tests/test_uart_timing_detailed tests/msync_benchmark tests/read_stepcount tests/move_lightbar
+			   tests/test_uart_timing_detailed tests/msync_benchmark tests/read_stepcount tests/move_lightbar tests/test_stallguard \
+			   tests/test_uart_connection
 
 # tests/test_motor_movement
 
@@ -56,6 +57,15 @@ tests/read_stepcount: read_stepcount.c
 tests/move_lightbar: move_lightbar.c $(LIB_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
 
+# Test 9: StallGuard test
+tests/test_stallguard: test_stallguard.c $(LIB_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
+
+# Test 9: StallGuard test
+tests/test_uart_connection: test_uart_connection.c $(LIB_OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
+
+
 
 # Individual test targets
 test_uart: tests/tmc2209_test
@@ -75,6 +85,10 @@ test_msync_benchmark: tests/msync_benchmark
 test_read_stepcount: tests/read_stepcount
 
 test_move_lightbar: tests/move_lightbar
+
+test_stallguard: tests/test_stallguard
+
+test_uart_connection: tests/test_uart_connection
 
 
 # Compile library objects
