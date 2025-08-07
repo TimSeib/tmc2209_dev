@@ -370,28 +370,6 @@ static int read_motor_direction(void) {
     return direction;
 }
 
-/**
- * @brief Read current motor direction from TMC2209 hardware (unused - replaced by file-based tracking)
- * 
- * @param driver TMC2209 driver instance
- * @return true if counter-clockwise (DIR=1), false if clockwise (DIR=0)
- */
-static bool read_motor_direction_hardware(TMC2209_t *driver) {
-    if (!driver) {
-        log_warn("Invalid driver, assuming clockwise direction");
-        return false;
-    }
-    
-    // Read the IOIN register from TMC2209 to get direction pin state
-    if (TMC2209_ReadRegister(driver, (TMC2209_datagram_t *)&driver->ioin)) {
-        bool direction = driver->ioin.reg.dir;
-        log_info("Read motor direction from hardware: %s", direction ? "counter-clockwise" : "clockwise");
-        return direction;
-    } else {
-        log_warn("Failed to read motor direction from hardware, assuming clockwise");
-        return false;
-    }
-}
 
 void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_profile, motion_profile_t *default_close_profile) {
     // Get environment variables

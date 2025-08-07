@@ -318,7 +318,7 @@ static void* position_monitor_thread_function(void *arg) {
                         current_step_count, current_step_count, monitor->poll_interval_steps, mod_result);
             }
         }
-        usleep(500); // 350μs-500μs sleep - must be present otherwise there are UART conflicts
+        usleep(350); // 350μs sleep - must be present otherwise there are UART conflicts
     }
     if(TMC2209_ReadRegister(monitor->driver, (TMC2209_datagram_t *)&monitor->driver->mscnt)){
         uint16_t actual_mscnt = monitor->driver->mscnt.reg.mscnt;

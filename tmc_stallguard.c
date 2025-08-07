@@ -6,8 +6,11 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <pthread.h>
+#include <gpiod.h>
+#include <errno.h>
 
-// Global variables for interrupt handling
+// Global variables for StallGuard state
 static volatile bool g_stallguard_triggered = false;
 static stallguard_callback_t g_stallguard_callback = NULL;
 static TMC2209_t *g_stallguard_driver = NULL;
@@ -16,13 +19,25 @@ static tmc_gpio_context_t *g_stallguard_gpio = NULL;
 // StallGuard configuration
 static tmc_stallguard_config_t g_stallguard_config = {0};
 
-// Interrupt handler for StallGuard
-static void stallguard_interrupt_handler(int sig) {
-    (void)sig; // Suppress unused parameter warning
+// Mutex for thread safety
+static pthread_mutex_t g_stallguard_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// GPIO interrupt callback for DIAG pin (integrated with existing GPIO infrastructure)
+static void stallguard_gpio_callback(uint8_t pin, bool rising_edge) {
+    (void)pin; // Suppress unused parameter warning
     
-    if (g_stallguard_callback) {
+    if (rising_edge) {
+        log_warn("StallGuard triggered! DIAG pin went HIGH");
+        
+        // Set the triggered flag
+        pthread_mutex_lock(&g_stallguard_mutex);
         g_stallguard_triggered = true;
-        g_stallguard_callback();
+        pthread_mutex_unlock(&g_stallguard_mutex);
+        
+        // Call user callback if set
+        if (g_stallguard_callback) {
+            g_stallguard_callback();
+        }
     }
 }
 
@@ -35,17 +50,6 @@ bool tmc_stallguard_init(TMC2209_t *driver, tmc_stallguard_config_t *config) {
     // Store configuration
     memcpy(&g_stallguard_config, config, sizeof(tmc_stallguard_config_t));
     g_stallguard_driver = driver;
-    
-    // Setup interrupt handler
-    struct sigaction sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sa_handler = stallguard_interrupt_handler;
-    sa.sa_flags = SA_RESTART;
-    
-    if (sigaction(SIGUSR1, &sa, NULL) == -1) {
-        log_error("Failed to setup StallGuard interrupt handler");
-        return false;
-    }
     
     // Set initial registers
     if (!tmc_stallguard_set_threshold(driver, config->threshold)) {
@@ -67,7 +71,6 @@ bool tmc_stallguard_init(TMC2209_t *driver, tmc_stallguard_config_t *config) {
 void tmc_stallguard_deinit(TMC2209_t *driver) {
     (void)driver; // Suppress unused parameter warning
 
-    
     // Reset global variables
     g_stallguard_callback = NULL;
     g_stallguard_driver = NULL;
@@ -104,6 +107,55 @@ bool tmc_stallguard_set_callback(TMC2209_t *driver, int diag_pin, uint32_t thres
              diag_pin, threshold, min_speed);
     
     return true;
+}
+
+// Setup StallGuard monitoring using existing GPIO infrastructure
+bool tmc_stallguard_setup_monitoring(TMC2209_t *driver, tmc_gpio_context_t *gpio_ctx, 
+                                    stallguard_callback_t callback) {
+    if (!driver || !gpio_ctx || !callback) {
+        log_error("Invalid parameters for StallGuard monitoring setup");
+        return false;
+    }
+    
+    // Store references
+    g_stallguard_driver = driver;
+    g_stallguard_gpio = gpio_ctx;
+    g_stallguard_callback = callback;
+    
+         // Setup DIAG pin interrupt using existing GPIO infrastructure
+     if (!tmc_gpio_setup_diag_interrupt(gpio_ctx, stallguard_gpio_callback)) {
+         log_error("Failed to setup DIAG pin interrupt");
+         return false;
+     }
+    
+    // Start GPIO event monitoring
+    if (!tmc_gpio_start_event_monitoring(gpio_ctx)) {
+        log_error("Failed to start GPIO event monitoring");
+        return false;
+    }
+    
+    log_info("StallGuard monitoring setup complete using existing GPIO infrastructure");
+    return true;
+}
+
+// Check if StallGuard is triggered (for integration with motion control)
+bool tmc_stallguard_check_triggered(TMC2209_t *driver, tmc_gpio_context_t *gpio_ctx) {
+    (void)driver; // Suppress unused parameter warning
+    (void)gpio_ctx; // Suppress unused parameter warning
+    
+    pthread_mutex_lock(&g_stallguard_mutex);
+    bool triggered = g_stallguard_triggered;
+    pthread_mutex_unlock(&g_stallguard_mutex);
+    
+    return triggered;
+}
+
+// Reset the triggered state (call after handling a stall event)
+void tmc_stallguard_reset_triggered(void) {
+    pthread_mutex_lock(&g_stallguard_mutex);
+    g_stallguard_triggered = false;
+    pthread_mutex_unlock(&g_stallguard_mutex);
+    log_debug("StallGuard triggered state reset");
 }
 
 uint32_t tmc_stallguard_get_result(TMC2209_t *driver) {

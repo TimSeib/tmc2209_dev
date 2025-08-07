@@ -61,9 +61,11 @@ tests/move_lightbar: move_lightbar.c $(LIB_OBJECTS)
 tests/test_stallguard: test_stallguard.c $(LIB_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
 
-# Test 9: StallGuard test
+
+# Test 11: UART connection test
 tests/test_uart_connection: test_uart_connection.c $(LIB_OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB_OBJECTS) $(LDFLAGS)
+
 
 
 
@@ -88,7 +90,9 @@ test_move_lightbar: tests/move_lightbar
 
 test_stallguard: tests/test_stallguard
 
+
 test_uart_connection: tests/test_uart_connection
+
 
 
 # Compile library objects

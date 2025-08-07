@@ -56,6 +56,7 @@ typedef struct {
     bool last_state;                            // Last known pin state
     uint32_t pulse_count;                       // Pulse counter
     uint64_t last_pulse_time;                   // Timestamp of last pulse
+    uint8_t pin_offset;                         // Pin offset for configuration
 } tmc_gpio_interrupt_context_t;
 
  // ============================================================================
@@ -75,23 +76,24 @@ typedef struct {
  // ============================================================================
  
  typedef struct {
-     struct gpiod_chip *chip;         // GPIO chip handle
-     struct gpiod_line *enable_line;  // Enable line handle
-     struct gpiod_line *step_line;    // Step line handle
-     struct gpiod_line *dir_line;     // Direction line handle
-     struct gpiod_line *diag_line;    // Diagnostic line handle
-     struct gpiod_line *index_line;   // Index line handle
+     struct gpiod_chip *chip;                    // GPIO chip handle
+     
+     // Individual line handles for libgpiod v1.6.5 API
+     struct gpiod_line *enable_line;             // Enable line handle
+     struct gpiod_line *step_line;               // Step line handle
+     struct gpiod_line *dir_line;                // Direction line handle
+     struct gpiod_line *diag_line;               // Diagnostic line handle
+     struct gpiod_line *index_line;              // Index line handle
 
      tmc_gpio_interrupt_context_t index_interrupt;   // INDEX pin interrupt
      tmc_gpio_interrupt_context_t diag_interrupt;    // DIAG pin interrupt
 
-      // Event monitoring
-     struct gpiod_line_bulk *event_lines;        // Lines to monitor for events
+     // Event monitoring
      bool event_monitoring_active;               // Event monitoring thread active
      pthread_t event_thread;                     // Event monitoring thread
      bool thread_should_exit;                    // Thread exit flag
 
-     bool initialized;                // Initialization status
+     bool initialized;                           // Initialization status
  } tmc_gpio_context_t;
  
  // ============================================================================
@@ -172,6 +174,43 @@ typedef struct {
   * @return true if index condition detected, false otherwise
   */
   bool tmc_gpio_read_index(tmc_gpio_context_t *ctx);
+
+ // ============================================================================
+ // GPIO INTERRUPT HANDLING FUNCTIONS
+ // ============================================================================
+ 
+ /**
+  * @brief Setup DIAG pin interrupt for StallGuard monitoring
+  * 
+  * @param ctx GPIO context structure
+  * @param callback Callback function to call on interrupt
+  * @return true on success, false on failure
+  */
+ bool tmc_gpio_setup_diag_interrupt(tmc_gpio_context_t *ctx, 
+                                   tmc_gpio_interrupt_callback_t callback);
+ 
+ /**
+  * @brief Start GPIO event monitoring thread
+  * 
+  * @param ctx GPIO context structure
+  * @return true on success, false on failure
+  */
+ bool tmc_gpio_start_event_monitoring(tmc_gpio_context_t *ctx);
+ 
+ /**
+  * @brief Stop GPIO event monitoring thread
+  * 
+  * @param ctx GPIO context structure
+  */
+ void tmc_gpio_stop_event_monitoring(tmc_gpio_context_t *ctx);
+ 
+ /**
+  * @brief Check if GPIO event monitoring is active
+  * 
+  * @param ctx GPIO context structure
+  * @return true if monitoring is active, false otherwise
+  */
+ bool tmc_gpio_is_event_monitoring_active(tmc_gpio_context_t *ctx);
 
  // ============================================================================
  // UTILITY FUNCTIONS
