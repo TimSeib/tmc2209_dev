@@ -10,11 +10,12 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <errno.h>
+#include <time.h>
 
 // ioctl is designed to interact with device drivers, allowing applications to send commands
 // and data to control hardware devices or access device-specific features. 
 #include <sys/ioctl.h>
-#include "common.h"
+#include "tmc2209.h"
 
 
 #define UART_DEVICE "/dev/ttyAMA5"  // UART5 on CM4 change to 3 for next board
@@ -103,6 +104,7 @@ TMC_uart_write_datagram_t *tmc_uart_read(trinamic_motor_t driver, TMC_uart_read_
     
     if (uart_fd < 0) {
         if (!uart_init()) {
+            fprintf(stderr, "tmc_uart_read: Failed to initialize UART\n");
             return NULL;
         }
     }
@@ -116,7 +118,11 @@ TMC_uart_write_datagram_t *tmc_uart_read(trinamic_motor_t driver, TMC_uart_read_
     // Send read command
     ssize_t written = write(uart_fd, datagram->data, sizeof(TMC_uart_read_datagram_t));
     if (written != sizeof(TMC_uart_read_datagram_t)) {
-        perror("UART read command failed");
+        fprintf(stderr, "tmc_uart_read: UART read command failed - expected %zu bytes, wrote %zd bytes\n", 
+                sizeof(TMC_uart_read_datagram_t), written);
+        if (written < 0) {
+            perror("tmc_uart_read: write error");
+        }
         return NULL;
     }
     
@@ -124,12 +130,16 @@ TMC_uart_write_datagram_t *tmc_uart_read(trinamic_motor_t driver, TMC_uart_read_
     int max_attempts = 400;  // 20ms total timeout
     int attempt = 0;
     ssize_t total_bytes_read = 0;
+    clock_t start_time = clock();
     
     while (attempt < max_attempts && total_bytes_read < 12) {
         ssize_t bytes_read = read(uart_fd, &raw_response[total_bytes_read], 12 - total_bytes_read);
         
         if (bytes_read > 0) {
             total_bytes_read += bytes_read;
+            if (total_bytes_read == 12) {
+                break; // Got all bytes, exit early
+            }
         } else if (bytes_read == 0) {
             // No data available yet - adaptive polling interval
             int poll_interval_us;
@@ -154,7 +164,9 @@ TMC_uart_write_datagram_t *tmc_uart_read(trinamic_motor_t driver, TMC_uart_read_
                 }
                 usleep(poll_interval_us);
             } else {
-                perror("UART read error");
+                fprintf(stderr, "tmc_uart_read: UART read error on attempt %d - errno: %d (%s)\n", 
+                        attempt, errno, strerror(errno));
+                perror("tmc_uart_read: read error");
                 return NULL;
             }
         }
@@ -162,31 +174,40 @@ TMC_uart_write_datagram_t *tmc_uart_read(trinamic_motor_t driver, TMC_uart_read_
         attempt++;
     }
     
+    clock_t end_time = clock();
+    double elapsed_ms = ((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000.0;
+    
     if (total_bytes_read != 12) {
-        //printf("tmc_uart_read: Expected 12 bytes, got %zd after %d attempts\n", total_bytes_read, attempt);
+        fprintf(stderr, "tmc_uart_read: TIMEOUT - Expected 12 bytes, got %zd after %d attempts (%.2f ms)\n", 
+                total_bytes_read, attempt, elapsed_ms);
+        
+        // Log what we did receive
+        if (total_bytes_read > 0) {
+            fprintf(stderr, "tmc_uart_read: Partial response received (%zd bytes): ", total_bytes_read);
+            for (int i = 0; i < total_bytes_read; i++) {
+                fprintf(stderr, "%02X ", raw_response[i]);
+            }
+            fprintf(stderr, "\n");
+        }
+        
+        // Check if we got any echo bytes (first 4 bytes should echo the command)
+        if (total_bytes_read >= 4) {
+            fprintf(stderr, "tmc_uart_read: Echo bytes: ");
+            for (int i = 0; i < 4; i++) {
+                fprintf(stderr, "%02X ", raw_response[i]);
+            }
+            fprintf(stderr, "\n");
+        }
+        
         return NULL;
     }
     
     // Flush any remaining data in the input buffer
     tcflush(uart_fd, TCIFLUSH);
     
-    // Debug: Print raw response bytes
-    // printf("tmc_uart_read raw response: ");
-    // for (int i = 0; i < 12; i++) {
-    //     printf("%02X ", raw_response[i]);
-    // }
-    // printf("\n");
-    
     // Extract the actual 8-byte response from bytes 4-11
     // The TMC2209 sends: [echo of command (4 bytes)] + [actual response (8 bytes)]
     memcpy(response.data, &raw_response[4], 8);
-    
-    // Debug: Print extracted response bytes
-    // printf("tmc_uart_read extracted response: ");
-    // for (int i = 0; i < 8; i++) {
-    //     printf("%02X ", response.data[i]);
-    // }
-    // printf("\n");
     
     return &response;
 }

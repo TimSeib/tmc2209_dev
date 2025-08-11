@@ -370,6 +370,74 @@ static int read_motor_direction(void) {
     return direction;
 }
 
+/**
+ * @brief Save valid bit to file
+ * 
+ * @param valid_bit 0 for invalid position, 1 for valid position
+ * @return true if successful, false otherwise
+ */
+static bool save_valid_bit(int valid_bit) {
+    int fd = open("valid_bit.dat", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {
+        log_error("Failed to open valid_bit.dat for writing: %s", strerror(errno));
+        return false;
+    }
+    
+    // Write valid bit as binary int32_t
+    int32_t valid_value = valid_bit;
+    if (write(fd, &valid_value, sizeof(int32_t)) != sizeof(int32_t)) {
+        log_error("Failed to write to valid_bit.dat: %s", strerror(errno));
+        close(fd);
+        return false;
+    }
+    
+    close(fd);
+    log_info("Saved valid bit: %s (value: %d)", 
+             valid_bit ? "valid" : "invalid", valid_bit);
+    return true;
+}
+
+/**
+ * @brief Read valid bit from file
+ * 
+ * @return 0 for invalid position, 1 for valid position, defaults to 0 if file not found
+ */
+static int read_valid_bit(void) {
+    int fd = open("valid_bit.dat", O_RDONLY);
+    if (fd == -1) {
+        log_warn("valid_bit.dat not found, assuming invalid position");
+        return 0; // Default to invalid
+    }
+    
+    // Check file size
+    struct stat st;
+    if (fstat(fd, &st) == -1) {
+        log_warn("Failed to get valid_bit.dat stats, assuming invalid position");
+        close(fd);
+        return 0;
+    }
+    
+    if (st.st_size != sizeof(int32_t)) {
+        log_warn("valid_bit.dat size is %ld bytes, expected %zu bytes, assuming invalid position", 
+                st.st_size, sizeof(int32_t));
+        close(fd);
+        return 0;
+    }
+    
+    // Read valid bit value
+    int32_t valid_bit = 0;
+    if (read(fd, &valid_bit, sizeof(int32_t)) != sizeof(int32_t)) {
+        log_warn("Failed to read valid_bit.dat, assuming invalid position");
+        close(fd);
+        return 0;
+    }
+    
+    close(fd);
+    log_info("Read valid bit from file: %s (value: %d)", 
+             valid_bit ? "valid" : "invalid", valid_bit);
+    return valid_bit;
+}
+
 
 void extract_profiles(motion_profile_t *default_profile, motion_profile_t *slow_profile, motion_profile_t *default_close_profile) {
     // Get environment variables
@@ -500,7 +568,7 @@ int main(int argc, char *argv[]) {
 
     // get the current position of the lightbar (stepcount.dat)
     int32_t current_mscnt = 0;
-    int valid_bit = 1; // Assume valid for now
+    int valid_bit = read_valid_bit(); // Read valid bit from file
     int direction = 0; // 0 = clockwise, 1 = counter-clockwise (will be read from hardware)
     
     // Read stepcount.dat file (contains binary int32_t MSCNT value)
@@ -683,6 +751,11 @@ int main(int argc, char *argv[]) {
     // Start S-curve motion (extract from selected profile)
     log_info("Starting S-curve motion...");
     
+    // Set valid bit to 0 (invalid) at start of motion
+    if (!save_valid_bit(0)) {
+        log_warn("Failed to save valid bit as invalid, continuing anyway");
+    }
+    
     // Save the direction we're about to use
     if (!save_motor_direction(direction)) {
         log_warn("Failed to save motor direction, continuing anyway");
@@ -756,12 +829,23 @@ int main(int argc, char *argv[]) {
         if (!save_motor_direction(direction)) {
             log_warn("Failed to save motor direction during shutdown");
         }
+        
+        // Set valid bit to 1 for graceful shutdown (controlled interruption)
+        if (!save_valid_bit(1)) {
+            log_warn("Failed to save valid bit as valid during graceful shutdown");
+        }
+        
         usleep(1000); // 1ms delay to ensure the final MSCNT reading is captured
         graceful_shutdown(final_mscnt, current_step_count, direction, valid_bit, total_mscnt_delta);
         return 1; // Exit with error code to indicate interrupted
-    }else
-
-    log_info("Motion completed successfully! Assume parked open or closed");
+    } else {
+        // Motion completed successfully - set valid bit to 1
+        if (!save_valid_bit(1)) {
+            log_warn("Failed to save valid bit as valid after successful completion");
+        }
+        
+        log_info("Motion completed successfully! Assume parked open or closed");
+    }
 
     // Cleanup
     tmc_motion_s_curve_deinit(&motion);
