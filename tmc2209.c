@@ -685,7 +685,14 @@ bool TMC2209_ReadRegister (TMC2209_t *driver, TMC2209_datagram_t *reg)
 
     if(res->msg.slave == 0xFF && res->msg.addr.value == datagram.msg.addr.value) {
         uint8_t crc = res->msg.crc;
-        tmc_crc8(res->data, sizeof(TMC_uart_write_datagram_t));
+        uint8_t calculated_crc;
+        
+        // Calculate CRC on a copy of the data to avoid modifying the original response
+        uint8_t temp_data[sizeof(TMC_uart_write_datagram_t)];
+        memcpy(temp_data, res->data, sizeof(TMC_uart_write_datagram_t));
+        tmc_crc8(temp_data, sizeof(TMC_uart_write_datagram_t));
+        calculated_crc = temp_data[sizeof(TMC_uart_write_datagram_t) - 1];
+        
         //printf("TMC2209_ReadRegister_crc: %d\n", crc);
         //printf("TMC2209_ReadRegister_crc_res: %d\n", res->msg.crc);
         if((ok = crc == res->msg.crc)) {
@@ -693,7 +700,7 @@ bool TMC2209_ReadRegister (TMC2209_t *driver, TMC2209_datagram_t *reg)
             tmc_byteswap(reg->payload.data);
         } else {
             fprintf(stderr, "TMC2209_ReadRegister: CRC mismatch for register 0x%02X - expected: %d, got: %d\n", 
-                    reg->addr.value, crc, res->msg.crc);
+                    reg->addr.value, crc, calculated_crc);
         }
     } else {
         fprintf(stderr, "TMC2209_ReadRegister: Invalid response for register 0x%02X - slave: 0x%02X (expected 0xFF), addr: 0x%02X (expected 0x%02X)\n", 
