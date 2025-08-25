@@ -2,49 +2,64 @@
 
 ## Overview
 
-This library provides a comprehensive interface for Trinamic stepper motor drivers, with particular focus on the **TMC2209** silent stepper motor driver. The library is written in plain C and is processor-agnostic, requiring only a low-level communications layer to be implemented by the user.
+This library provides a comprehensive interface for the tmc2209, it includes a multi threaded interface for controlling the steps of the motor, monitoring MSCNT register, and providing a stallguard interrupt interface in case of motor overload. The gpio structure is also defined along with a UART interface for communication with the tmc2209 registers. 
 
 ## Supported Drivers
 
 - **TMC2209** - Silent stepper driver with UART interface
-- **TMC2130** - SPI stepper driver with StallGuard
-- **TMC5160** - High-power stepper driver with SPI
-- **TMC2660** - High-power stepper driver with SPI
-- **TMC2240** - High-power stepper driver with SPI
 
 ## Key Features
 
+- **S-Curve** - S-curve motion profile is implemented, able to calculate proper velocity and acceleration for given microstep resolution and other user parameters
+- **Stallguardv2** - Stall guard is enabled making the motor safe for over current situations, cool step also allows the motor to move at lower current, saving power
+- **MSCNT Monitoring** - Constant monitoring of the MSCNT register gives accurate measure of motor position relative to sent pulses, ensuring accuracy and detection of error
+- **UART** - Custom UART interface created using 'termios' as the C API for UART connection
+- **Graceful Shutdown** - System interrupts are properly handled and the state of the motor can be correct saved for recovery, unexpected power off triggers recovery mode to home lightbar to close
+
 ### TMC2209 Specific Features
-- **StealthChop Mode** - Silent operation with PWM current control
-- **SpreadCycle Mode** - High-performance operation with chopper control
+
+- **StealthChop Mode** - Silent operation with PWM current control, low velocities
 - **CoolStep** - Automatic current reduction for energy efficiency
 - **StallGuard** - Stall detection for endstop-less homing
 - **UART Interface** - Simple single-wire communication
-- **256 Microsteps** - Ultra-smooth motion with interpolation
-
-### Library Features
-- **Processor Agnostic** - Works with any microcontroller
-- **Modular Design** - Easy to extend for new drivers
-- **Comprehensive Documentation** - Detailed comments based on datasheets
-- **Configuration Management** - Easy setup and parameter adjustment
-- **Error Detection** - Built-in communication verification
+- **1-256 Microsteps** - Ultra-smooth motion with interpolation
 
 ## File Structure
 
 ```
 ├── tmc2209.h          # TMC2209 register definitions and API
 ├── tmc2209.c          # TMC2209 implementation
-├── tmc2209hal.h       # Hardware abstraction layer interface
-├── tmc2209hal.c       # Hardware abstraction layer implementation
-├── tmc2209.h          # TMC2209 driver interface (includes common structures)
-├── tmc2209.c          # TMC2209 driver implementation (includes common functions)
-├── tmchal.h           # Hardware abstraction layer base
-├── tmc_i2c_interface.h # I2C interface definitions
-├── tmc_interface.c    # Interface implementation
-└── README.md          # This file
+├── tmc_gpio.h         # RPI gpio definitions and API
+├── tmc_gpio.c         # RPI gpio implementation with libgpio v1.6
+├── tmc_motion.h       # Step motion thread definitions
+├── tmc_motion.c       # Step motion thread implementation
+├── tmc_monitor.h      # MSCNT monitoring thread definitions
+├── tmc_monitor.c      # MSCNT monitoring thread implementation 
+├── tmc_uart_rpi.c     # UART interface for raspberry pi using termios
+├── move_lightbar.c    # Main function to perform movement of lightbar, takes argument debug level
+└── README.md          # Information on implementation of entire system
 ```
-
 ## Quick Start
+
+### 0. Setup (Windows)
+
+1. Ensure you have buildroot installed and the proper image is able to be flashed
+
+2. Open WSL on VSCODE or equivalent and use remote connected (bottom left corner of window) to connect to WSL
+    <img src="images/wslcorner.png" width="600" height="300" />
+
+    <img src="images/wsl.png" width="400" height="200" />
+3. Navigate to the buildroot directory and create a programs development folder
+
+4. Clone this directory (or whatevever source code you have)
+```bash
+git clone git@github.com:TimSeib/tmc2209_dev.git
+```
+5. run make to compile programs and see "tests" folder to access binaries
+
+6. Use tool like WinSCP to transfer files from Windows machine to Raspberry PI
+
+7. See make file (lines 1-7) to see how to compile programs in such a way that they work on our system
 
 ### 1. Basic Initialization
 
@@ -69,45 +84,87 @@ if (!TMC2209_Init(&driver)) {
 }
 ```
 
-### 2. Current Control
+### 2. Motion Control Setup
 
 ```c
-// Set motor current
-TMC2209_SetCurrent(&driver, 750, 50);  // 750mA run, 50% hold
+#include "tmc_motion.h"
+#include "tmc_gpio.h"
 
-// Get current values
-uint16_t run_current = TMC2209_GetCurrent(&driver, TMCCurrent_Actual);
-uint16_t hold_current = TMC2209_GetCurrent(&driver, TMCCurrent_Hold);
+// Initialize GPIO context
+tmc_gpio_context_t gpio_ctx;
+tmc_gpio_init(&gpio_ctx);
+
+// Initialize motion control
+tmc_motion_s_curve_t motion;
+tmc_motion_s_curve_init(&motion, &gpio_ctx, &driver);
+
+// Start S-curve motion
+tmc_motion_s_curve_start(&motion, 
+    90.0f,           // target_angle_degrees
+    60.0f,           // max_speed_rpm
+    2.0f,            // max_accel_hz_per_sec
+    0.1f,            // jerk_rate_hz_per_sec2
+    50.0f,           // start_speed_hz
+    0.5f,            // start_accel_hz_per_sec
+    1.0f,            // gear_ratio
+    false,            // direction (false = counter-clockwise)
+    16                // microstep_resolution
+);
 ```
 
-### 3. Microstepping
+### 3. Position Monitoring
 
 ```c
-// Set microstep resolution
-TMC2209_SetMicrosteps(&driver, TMC2209_Microsteps_256);
+#include "tmc_monitor.h"
 
-// Validate microstep setting
-if (TMC2209_MicrostepsIsValid(128)) {
-    // Valid microstep value
-}
+// Position monitoring is automatically started with motion
+// Get current status
+uint32_t step_count;
+uint16_t mscnt;
+int16_t error;
+uint64_t last_update;
+bool valid = tmc_position_monitor_get_status(&motion.position_monitor, 
+    &step_count, &mscnt, &error, &last_update);
+
+// Get error statistics
+int32_t total_error;
+uint32_t check_count;
+float average_error;
+tmc_position_monitor_get_error_stats(&motion.position_monitor, 
+    &total_error, &check_count, &average_error);
 ```
 
-### 4. Threshold Configuration
+### 4. StallGuard Configuration
 
 ```c
-// Set StealthChop threshold (speed for switching modes)
-TMC2209_SetTPWMTHRS(&driver, 100.0f, 80.0f);  // 100mm/s, 80 steps/mm
+#include "tmc_stallguard.h"
 
-// Set CoolStep threshold
-TMC2209_SetTCOOLTHRS(&driver, 50.0f, 80.0f);  // 50mm/s, 80 steps/mm
+// Configure StallGuard
+tmc_stallguard_config_t sg_config = {
+    .diag_pin = 25,           // GPIO pin for DIAG signal
+    .threshold = 3,            // Stall threshold (lower = more sensitive)
+    .min_speed_threshold = 1500, // Minimum speed for StallGuard
+    .callback = NULL           // Stall callback function
+};
+
+tmc_stallguard_init(&driver, &sg_config);
+
+// Setup monitoring with GPIO context
+tmc_stallguard_setup_monitoring(&driver, &gpio_ctx, stall_callback_function);
 ```
 
 ## Configuration Options
 
 ### Operating Modes
-- **StealthChop** - Silent operation, best for low-speed applications
+- **StealthChop** - Silent operation, best for low-speed applications (default)
 - **SpreadCycle** - High performance, best for high-speed applications
 - **CoolStep** - Energy efficient, automatically reduces current
+
+### Motion Control
+- **S-Curve Profile** - Jerk-controlled acceleration/deceleration with 7 phases
+- **Speed Control** - Configurable from 10-500 Hz with automatic timer period calculation
+- **Acceleration Control** - Configurable from 0.1-10 Hz/sec with jerk rate limiting
+- **Microstep Resolution** - 1, 2, 4, 8, 16, 32, 64, 128, or 256 microsteps
 
 ### Current Settings
 - **Run Current** - Current during motion (0-2000mA typical)
@@ -127,6 +184,7 @@ TMC2209_SetTCOOLTHRS(&driver, 50.0f, 80.0f);  // 50mm/s, 80 steps/mm
 - **ENN** - Enable pin (active low)
 - **STEP** - Step input
 - **DIR** - Direction input
+- **DIAG** - StallGuard diagnostic output
 - **VCC** - 5V supply
 - **VM** - Motor supply voltage
 - **GND** - Ground
@@ -135,6 +193,11 @@ TMC2209_SetTCOOLTHRS(&driver, 50.0f, 80.0f);  // 50mm/s, 80 steps/mm
 - **External** - 110mOhm recommended (default)
 - **Internal** - 60mOhm (requires configuration change)
 
+### GPIO Requirements
+- **Raspberry Pi** - Uses libgpio v1.6 for GPIO control
+- **Step/Dir/Enable** - Standard stepper motor control pins
+- **DIAG Pin** - Interrupt-capable GPIO for StallGuard monitoring
+
 ## Communication Interface
 
 The library uses a UART-based communication protocol with the following characteristics:
@@ -142,21 +205,36 @@ The library uses a UART-based communication protocol with the following characte
 - **Data Format** - 8N1
 - **Protocol** - Single-wire UART with CRC8
 - **Addressing** - Up to 256 devices on one bus
+- **Implementation** - Uses termios API for UART communication
 
-## Integration Examples
+## Motion Control System
 
-### grblHAL Integration
-This library is used by [grblHAL](https://github.com/grblHAL) drivers. Examples of:
-- Low-level communications layers
-- Higher-level configuration/reporting layer
-- Complete integration examples
+### S-Curve Motion Profile
+The library implements a sophisticated 7-phase S-curve motion profile:
 
-### I2C Bridge
-For systems with limited I/O capabilities, a [SPI <> I2C bridge](https://github.com/terjeio/Trinamic_TMC2130_I2C_SPI_Bridge) is available, implemented on a TI MSP430G2553 processor.
+1. **Acceleration Jerk Increase** - Acceleration ramps up linearly
+2. **Acceleration Constant** - Maximum acceleration maintained
+3. **Acceleration Jerk Decrease** - Acceleration ramps down to zero
+4. **Constant Speed** - Maximum speed maintained (if trapezoidal profile)
+5. **Deceleration Jerk Increase** - Deceleration ramps up linearly
+6. **Deceleration Constant** - Maximum deceleration maintained
+7. **Deceleration Jerk Decrease** - Deceleration ramps down to zero
+
+### Position Monitoring
+- **MSCNT Register Polling** - Real-time microstep position tracking
+- **Error Detection** - Continuous comparison of expected vs actual position
+- **Step Boundary Polling** - Polls at full-step boundaries for efficiency
+- **Position Persistence** - Maintains position across power cycles using memory-mapped files
+
+### StallGuard Integration
+- **Automatic Stall Detection** - Monitors DIAG pin for motor stall conditions
+- **Configurable Thresholds** - Adjustable sensitivity and speed thresholds
+- **Interrupt-Based Monitoring** - Uses GPIO interrupts for immediate response
+- **Callback System** - User-defined stall handling functions
 
 ## API Reference
 
-### Core Functions
+### Core TMC2209 Functions
 - `TMC2209_Init()` - Initialize driver
 - `TMC2209_SetDefaults()` - Set default configuration
 - `TMC2209_SetCurrent()` - Configure motor current
@@ -165,10 +243,54 @@ For systems with limited I/O capabilities, a [SPI <> I2C bridge](https://github.
 - `TMC2209_SetTPWMTHRS()` - Set StealthChop threshold
 - `TMC2209_SetTCOOLTHRS()` - Set CoolStep threshold
 
+### Motion Control Functions
+- `tmc_motion_s_curve_init()` - Initialize S-curve motion control
+- `tmc_motion_s_curve_start()` - Start S-curve motion with parameters
+- `tmc_motion_s_curve_stop()` - Stop motion and disable motor
+- `tmc_motion_s_curve_is_complete()` - Check if motion is finished
+- `tmc_motion_s_curve_get_progress()` - Get motion progress percentage
+
+### Position Monitoring Functions
+- `tmc_position_monitor_init()` - Initialize position monitoring
+- `tmc_position_monitor_start()` - Start position monitoring thread
+- `tmc_position_monitor_get_status()` - Get current position and error status
+- `tmc_position_monitor_get_error_stats()` - Get accumulated error statistics
+
+### StallGuard Functions
+- `tmc_stallguard_init()` - Initialize StallGuard with configuration
+- `tmc_stallguard_setup_monitoring()` - Setup GPIO monitoring for stall detection
+- `tmc_stallguard_check_triggered()` - Check if stall condition is detected
+- `tmc_stallguard_reset_triggered()` - Reset stall detection state
+
+### GPIO Control Functions
+- `tmc_gpio_init()` - Initialize GPIO context
+- `tmc_gpio_write()` - Write to GPIO pin
+- `tmc_gpio_enable_driver()` - Enable/disable motor driver
+- `tmc_gpio_setup_diag_interrupt()` - Setup DIAG pin interrupt
+
 ### Register Access
 - `TMC2209_WriteRegister()` - Write to driver register
 - `TMC2209_ReadRegister()` - Read from driver register
 - `TMC2209_GetRegPtr()` - Get pointer to shadow register
+
+## Advanced Features
+
+### Multi-Threaded Architecture
+- **Motion Thread** - Handles step generation and timing
+- **Position Monitor Thread** - Continuously monitors MSCNT register
+- **GPIO Event Thread** - Monitors StallGuard interrupts
+- **Thread Synchronization** - Mutex-protected data access
+
+### Position Persistence
+- **Memory-Mapped Files** - Maintains step count across power cycles
+- **Automatic Recovery** - Detects and restores previous position state
+- **Real-Time Sync** - Continuous disk synchronization for reliability
+
+### Error Handling and Recovery
+- **CRC Validation** - UART communication integrity checking
+- **Interface Counter Verification** - Communication reliability monitoring
+- **Position Error Detection** - Continuous accuracy monitoring
+- **Graceful Shutdown** - Proper cleanup on unexpected termination
 
 ## Troubleshooting
 
@@ -177,12 +299,88 @@ For systems with limited I/O capabilities, a [SPI <> I2C bridge](https://github.
 2. **High Current** - Verify sense resistor value and current settings
 3. **Motor Noise** - Adjust chopper settings or switch to StealthChop mode
 4. **Stall Detection** - Configure StallGuard threshold properly
+5. **Position Drift** - Check microstep resolution and direction settings
+6. **Thread Conflicts** - Ensure proper initialization order and cleanup
 
 ### Debug Features
-- Interface counter verification
-- CRC error detection
-- Status register monitoring
-- Temperature monitoring
+- **Comprehensive Logging** - Multi-level logging system (trace, debug, info, warn, error)
+- **Interface Counter Verification** - UART communication reliability checking
+- **CRC Error Detection** - Data integrity validation
+- **Status Register Monitoring** - Real-time register value tracking
+- **Position Error Statistics** - Accumulated error tracking and averaging
+- **StallGuard Status** - Complete StallGuard configuration and status reporting
+
+### Performance Monitoring
+- **Step Timing Analysis** - Microsecond-precision step timing
+- **Position Accuracy Tracking** - Continuous MSCNT vs expected position comparison
+- **Error Accumulation** - Long-term position error statistics
+- **Motion Phase Tracking** - Real-time S-curve phase identification
+
+## Integration Examples
+
+### Standalone Motion Control
+```c
+// Complete motion control example
+tmc_gpio_context_t gpio_ctx;
+TMC2209_t driver;
+tmc_motion_s_curve_t motion;
+
+// Initialize all components
+tmc_gpio_init(&gpio_ctx);
+TMC2209_SetDefaults(&driver);
+TMC2209_Init(&driver);
+tmc_motion_s_curve_init(&motion, &gpio_ctx, &driver);
+
+// Start motion
+tmc_motion_s_curve_start(&motion, 180.0f, 60.0f, 2.0f, 0.1f, 50.0f, 0.5f, 1.0f, true, 16);
+
+// Wait for completion
+while (!tmc_motion_s_curve_is_complete(&motion)) {
+    usleep(10000); // 10ms
+}
+
+// Cleanup
+tmc_motion_s_curve_deinit(&motion);
+tmc_gpio_deinit(&gpio_ctx);
+```
+
+### StallGuard Integration
+```c
+// StallGuard callback function
+void stall_callback(void) {
+    log_warn("Motor stall detected - stopping motion");
+    // Implement stall handling logic
+}
+
+// Setup StallGuard monitoring
+tmc_stallguard_config_t sg_config = {
+    .diag_pin = 25,
+    .threshold = 3,
+    .min_speed_threshold = 1500,
+    .callback = stall_callback
+};
+
+tmc_stallguard_init(&driver, &sg_config);
+tmc_stallguard_setup_monitoring(&driver, &gpio_ctx, stall_callback);
+```
+
+## TODO
+
+### Missing Documentation
+- **UART Configuration Details** - Specific UART setup requirements
+- **GPIO Pin Mapping** - Default pin assignments and configuration
+- **Performance Benchmarks** - Speed and accuracy measurements
+- **Error Code Reference** - Complete list of error codes and meanings
+- **Configuration File Format** - If configuration files are supported
+- **Build Instructions** - Compilation and linking requirements
+- **Dependency Management** - Required system libraries and versions
+
+### Unclear Implementation Details
+- **Memory Management** - Memory allocation and cleanup strategies
+- **Thread Priority** - Thread scheduling and priority configuration
+- **Power Management** - Sleep modes and power consumption optimization
+- **Fault Tolerance** - Error recovery and system resilience
+- **Calibration Procedures** - Motor and system calibration methods
 
 ## License
 
@@ -194,9 +392,12 @@ Contributions are welcome! Please ensure:
 - Code follows the existing style
 - New features are properly documented
 - Tests are included for new functionality
+- Thread safety is maintained
+- Error handling is comprehensive
 
 ## Version History
 
+- **v1.0.0** - Complete motion control system with S-curve profiles, position monitoring, and StallGuard integration
 - **v0.0.9** - Enhanced documentation, improved error handling
 - **v0.0.8** - Added comprehensive register documentation
 - **v0.0.7** - Improved current calculation accuracy
@@ -205,4 +406,4 @@ Contributions are welcome! Please ensure:
 
 ---
 
-*Last updated: 2024-11-17*
+*Last updated: 2024-12-19*
