@@ -53,13 +53,27 @@ This library provides a comprehensive interface for the tmc2209, it includes a m
 
 4. Clone this directory (or whatevever source code you have)
 ```bash
-git clone git@github.com:TimSeib/tmc2209_dev.git
+    git clone git@github.com:TimSeib/tmc2209_dev.git
 ```
 5. run make to compile programs and see "tests" folder to access binaries
 
 6. Use tool like WinSCP to transfer files from Windows machine to Raspberry PI
 
 7. See make file (lines 1-7) to see how to compile programs in such a way that they work on our system
+
+8. BONUS: I recommend you create a couple local variables in your baschrc
+```bash
+    # fix path for my system
+    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/
+
+    CROSS_COMPILER=~/buildroot/output/host/bin/aarch64-buildroot-linux-gnu-
+```
+This makes it so that your path is correct for the WSL (doesn't include windows paths) and the CROSS_COMPILER is now an env variable
+so you can run things like: 
+```bash
+    ${CROSS_COMPILER}gcc -o water_level waterlevel.c -lgpiod
+```
+
 
 ### 1. Basic Initialization
 
